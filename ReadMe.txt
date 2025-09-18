@@ -14,4 +14,5 @@ Stuff done so far:
 -Project folder structure
 -Setup dependencies using NPM (package manager) (next express js)
 -Set up npm scripts for running dev server (production mode to be added later)
--
+-Created express server
+-Express server serves static front end files now
