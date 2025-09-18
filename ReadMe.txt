@@ -13,6 +13,5 @@ run "npm install" in the root and two main subfolders (api and frontend)
 Stuff done so far:
 -Project folder structure
 -Setup dependencies using NPM (package manager) (next express js)
--Set up open for running special npm script
 -Set up npm scripts for running dev server (production mode to be added later)
 -
