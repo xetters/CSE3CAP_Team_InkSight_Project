@@ -1,30 +1,30 @@
-<!-- frontend/index.html -->
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <title>InkSight</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <h1>InkSight</h1>
+    <div class="ink-container">
+      <h1>InkSight</h1>
 
-    <label for="file">Upload a .txt file:</label><br />
-    <input id="file" type="file" accept=".txt" /><br /><br />
+      <label for="file">Upload a .txt file:</label><br />
+      <input id="file" type="file" accept=".txt" /><br /><br />
 
-    <!-- (kept) paste area + button, unused right now -->
-    <label for="text">Paste text, then click Analyze: ***NOT FUNCTIONAL YET*** </label><br />
-    <textarea id="text" rows="10" cols="80" placeholder="Paste text here..."></textarea><br />
+      <label for="text">Or paste text below:</label><br />
+      <textarea id="text" rows="10" cols="80" placeholder="Feature pending..."></textarea><br />
 
-    <button id="analyzeBtn">Analyze</button>
-    <button id="showBtn">Show Results</button>
+      <button id="analyzeBtn">Analyze</button>
 
-    <div id="results" style="margin-top:16px;"></div>
+      <div id="results" style="margin-top:16px;"></div>
 
-    <br /><br />
-    <a href="http://localhost:3000/page2.html">
-      <button>Go to Second Page</button>
-    </a>
+      <br /><br />
+      <a href="http://localhost:3000/page2.html">
+        <button>Go to Second Page</button>
+      </a>
+    </div>
 
     <script src="index.js" defer></script>
   </body>
