@@ -25,3 +25,4 @@ Run `npm install` in the root folder and in the two main subfolders (`api` and `
 - Set up npm scripts for running dev server (production mode to be added later)
 - Created express server
 - Express server serves static front end files now
+- Added multer to backend for js file processing

@@ -1,3 +1,4 @@
+<!-- frontend/index.html -->
 <!doctype html>
 <html lang="en">
   <head>
@@ -8,14 +9,23 @@
   <body>
     <h1>InkSight</h1>
 
+    <label for="file">Upload a .txt file:</label><br />
+    <input id="file" type="file" accept=".txt" /><br /><br />
+
+    <!-- (kept) paste area + button, unused right now -->
     <label for="text">Paste text, then click Analyze:</label><br />
     <textarea id="text" rows="10" cols="80" placeholder="Paste text here..."></textarea><br />
 
-    <button>Analyze</button><br /><br />
+    <button id="analyzeBtn">Analyze</button>
+    <button id="showBtn">Show Results</button>
 
-    <!-- Button linking to the second page -->
+    <div id="results" style="margin-top:16px;"></div>
+
+    <br /><br />
     <a href="http://localhost:3000/page2.html">
       <button>Go to Second Page</button>
     </a>
+
+    <script src="index.js" defer></script>
   </body>
 </html>
