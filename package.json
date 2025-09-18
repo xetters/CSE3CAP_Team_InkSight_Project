@@ -1,0 +1,14 @@
+{
+  "name": "inksight-project",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start-api": "npm run start --prefix api",
+    "open-browser": "node -e \"require('child_process').exec(process.platform === 'win32' ? 'start http://localhost:3000' : process.platform === 'darwin' ? 'open http://localhost:3000' : 'xdg-open http://localhost:3000');\"",
+    "dev": "npm run start-api & npm run open-browser"
+},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
