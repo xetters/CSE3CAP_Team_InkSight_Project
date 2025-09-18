@@ -1,11 +1,10 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 const PORT = 3000;
 
-// Test Route
-app.get('/', (req, res) => {
-  res.send('Server is working!');
-});
+// Serve static files from the 'frontend' folder
+app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
 // Start server
 app.listen(PORT, () => {
