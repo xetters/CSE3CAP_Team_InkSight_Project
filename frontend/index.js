@@ -3,13 +3,26 @@ let lastResult = null;
 
 const $ = (id) => document.getElementById(id);
 const fileInput = $('file');
+const textArea = $('text');
 const analyzeBtn = $('analyzeBtn');
 const resultsDiv = $('results');
 
-// Enable analyze button when file is uploaded
-fileInput.addEventListener('change', () => {
-  analyzeBtn.disabled = !fileInput.files[0];
-});
+// Enable analyze button when file is uploaded or text is entered
+function checkInput() {
+  const hasFile = !!fileInput.files[0];
+  const hasText = !!textArea.value.trim();
+  
+  analyzeBtn.disabled = !hasFile && !hasText;
+  
+  // Disable textarea if file is uploaded
+  textArea.disabled = hasFile;
+  
+  // Disable file input if text is entered
+  fileInput.disabled = hasText;
+}
+
+fileInput.addEventListener('change', checkInput);
+textArea.addEventListener('input', checkInput);
 
 function renderContainers() {
   resultsDiv.innerHTML = `
@@ -77,10 +90,22 @@ function renderTable(container, data) {
 
 analyzeBtn.addEventListener('click', async () => {
   const f = fileInput.files[0];
-  if (!f) { alert('Choose a .txt file first'); return; }
+  const text = textArea.value.trim();
+  
+  if (!f && !text) { 
+    alert('Choose a .txt file or enter text first'); 
+    return; 
+  }
 
   const fd = new FormData();
-  fd.append('file', f);
+  
+  if (f) {
+    fd.append('file', f);
+  } else {
+    // Create a blob from textarea text and send as file
+    const blob = new Blob([text], { type: 'text/plain' });
+    fd.append('file', blob, 'input.txt');
+  }
 
   try {
     const res = await fetch('/api/analyze-file', { method: 'POST', body: fd });
