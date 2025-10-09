@@ -1,19 +1,69 @@
-# Running This App on Another PC
+# Three Muskateers - InkSight NLP Project
 
-******************************************
+A text analysis and NLP web application that uses Node.js/Express for the backend and Python + FastText?* for text processing.
+
+---
 
 ## Prerequisites
 
-Ensure the following software dependencies and versions are installed:
+Ensure the following software dependencies are installed on your system:
 
-- Node 18+
-- Npm v9+
-- Python 3.9+
+- **Node.js**: v18 or higher
+- **npm**: v9 or higher  
+- **Python**: v3.9 or higher
 
-******************************************
+You can verify your installations by running:
+```bash
+node --version
+npm --version
+python --version
+```
+
+---
 
 ## Installation
 
-Run `npm install` in the root folder and in the two main subfolders (`api` and `frontend`)
+1. **Clone or download** this repository to your local machine
 
-******************************************
+2. **Install Node.js dependencies** in the root directory:
+   ```bash
+   npm install
+   ```
+
+3. **Install dependencies** in the `api` subfolder:
+   ```bash
+   cd api
+   npm install
+   cd ..
+   ```
+
+4. **Install dependencies** in the `frontend` subfolder (if applicable):
+   ```bash
+   cd frontend
+   npm install
+   cd ..
+   ```
+
+---
+
+## Running the Application
+
+1. **Start the server** from the root directory:
+   ```bash
+   node api/app.js
+   ```
+
+2. **Open your browser** and navigate to:
+   ```
+   http://localhost:3000
+   ```
+
+3. **Upload a `.txt` file** or paste text directly to analyze word frequency and get insights
+
+---
+
+## Notes
+
+- The application runs on **port 3000** by default
+- Python analysis is performed via a spawned subprocess, so Python must be accessible in your system PATH
+- File uploads are handled in-memory using `multer`
