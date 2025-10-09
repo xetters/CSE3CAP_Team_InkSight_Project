@@ -4,17 +4,68 @@ let lastResult = null;
 const $ = (id) => document.getElementById(id);
 const fileInput = $('file');
 const analyzeBtn = $('analyzeBtn');
-const showBtn = $('showBtn');
 const resultsDiv = $('results');
 
-function render(data) {
-  if (!data) { resultsDiv.textContent = ''; return; }
+// Enable analyze button when file is uploaded
+fileInput.addEventListener('change', () => {
+  analyzeBtn.disabled = !fileInput.files[0];
+});
+
+function renderContainers() {
+  resultsDiv.innerHTML = `
+    <div class="analysis-container">
+      <button id="sentimentBtn">Sentiment Analysis</button>
+      <div id="sentimentResults"></div>
+    </div>
+
+    <div class="analysis-container">
+      <button id="keynessBtn">Keyness Statistics</button>
+      <div id="keynessResults"></div>
+    </div>
+
+    <div class="analysis-container">
+      <button id="wordCountBtn">Word Count</button>
+      <div id="wordCountResults"></div>
+    </div>
+  `;
+
+  // Add click handlers for each button
+  $('sentimentBtn').addEventListener('click', () => {
+    const container = $('sentimentResults');
+    if (container.innerHTML) {
+      container.innerHTML = '';
+    } else {
+      renderTable(container, lastResult);
+    }
+  });
+
+  $('keynessBtn').addEventListener('click', () => {
+    const container = $('keynessResults');
+    if (container.innerHTML) {
+      container.innerHTML = '';
+    } else {
+      renderTable(container, lastResult);
+    }
+  });
+
+  $('wordCountBtn').addEventListener('click', () => {
+    const container = $('wordCountResults');
+    if (container.innerHTML) {
+      container.innerHTML = '';
+    } else {
+      renderTable(container, lastResult);
+    }
+  });
+}
+
+function renderTable(container, data) {
+  if (!data) { container.textContent = ''; return; }
 
   const rows = (data.top || []).map(item =>
     `<tr><td>${item.w}</td><td>${item.n}</td></tr>`
   ).join('');
 
-  resultsDiv.innerHTML = `
+  container.innerHTML = `
     <p><b>Word count:</b> ${data.word_count ?? 0}</p>
     <p><b>Insight:</b> ${data.insight ?? ''}</p>
     <table border="1" cellpadding="4" cellspacing="0">
@@ -35,10 +86,8 @@ analyzeBtn.addEventListener('click', async () => {
     const res = await fetch('/api/analyze-file', { method: 'POST', body: fd });
     const data = await res.json();
     lastResult = data;
-    render(lastResult);                // show immediately after analyze
+    renderContainers();
   } catch (e) {
     alert('Error analyzing file');
   }
 });
-
-showBtn.addEventListener('click', () => render(lastResult));

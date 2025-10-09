@@ -165,12 +165,12 @@ button {
   margin: 0 auto; /* center buttons */
 }
 
-button:hover {
+button:hover:not([disabled]) {
   background-color: var(--primary-700);
   transform: translateY(-1px);
 }
 
-button:active {
+button:active:not([disabled]) {
   transform: translateY(0);
 }
 
@@ -222,6 +222,23 @@ th, td {
 th {
   background-color: #eef2ff;
   font-weight: 600;
+}
+
+/* ---------- Analysis containers ---------- */
+.analysis-container {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin-top: var(--space);
+  background-color: #fafbfc;
+}
+
+.analysis-container button {
+  width: 100%;
+}
+
+.analysis-container > div {
+  margin-top: var(--space);
 }
 
 /* ---------- Motion preference ---------- */
