@@ -58,7 +58,9 @@ python --version
    http://localhost:3000
    ```
 
-3. **Upload a `.txt` file** or paste text directly to analyze word frequency and get insights
+3. **Upload a `.txt` file** or paste text directly to analyze:
+   - Word frequency and insights
+   - Sentiment analysis (dummy implementation - replace with FastText later)
 
 ---
 
@@ -67,3 +69,4 @@ python --version
 - The application runs on **port 3000** by default
 - Python analysis is performed via a spawned subprocess, so Python must be accessible in your system PATH
 - File uploads are handled in-memory using `multer`
+- **Sentiment analysis**: Currently uses random data for testing. To integrate FastText/NLP, replace the `analyze_sentiment()` function in `api/utils/sentiment.py`
