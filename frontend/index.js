@@ -16,7 +16,7 @@ fileInput.addEventListener('change', () => {
   if (f && f.size > MAX_FILE_SIZE) {
     fileInput.value = '';
     resultsDiv.innerHTML = `<div style="color:red; border:1px solid red; padding:8px; margin-bottom:8px;">
-      Error: File size exceeds 5MB limit.
+      Error: File size exceeds 5MB limit!
     </div>`;
   }
 });
