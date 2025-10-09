@@ -1,0 +1,521 @@
+----- api\app.js -----
+const express = require('express');
+const path = require('path');
+const app = express();
+const routes = require('./routes');
+const PORT = 3000;
+
+// Serve static files from the 'frontend' folder
+app.use(express.static(path.join(__dirname, '..', 'frontend')));
+
+// Mount API routes
+app.use('/api', routes);
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});
+
+
+
+----- api\routes.js -----
+// api/routes.js
+const express = require('express');
+const multer = require('multer');
+// spawn is for python
+const { spawn } = require('child_process');
+const path = require('path');
+
+const router = express.Router();
+// multer for file processing
+const upload = multer({ storage: multer.memoryStorage() });
+
+router.post('/analyze-file', upload.single('file'), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No file' });
+
+  const py = spawn('python', [path.join(__dirname, 'utils', 'analyze.py')]);
+  let out = '';
+  py.stdout.on('data', (d) => (out += d));
+  py.on('close', () => {
+    try { res.json(JSON.parse(out)); }
+    catch { res.status(400).json({ error: 'Bad JSON' }); }
+  });
+
+  py.stdin.write(req.file.buffer.toString());
+  py.stdin.end();
+});
+
+module.exports = router;
+
+// things not included:
+// - file type and size check
+
+----- api\utils\analyze.py -----
+# api/utils/analyze.py
+import sys
+import json
+import re
+from collections import Counter
+
+def tokenize(text: str) -> list[str]:
+    """Convert text to a list of lowercase word tokens."""
+    return re.findall(r"[A-Za-z']+", text.lower())
+
+def count_words(tokens: list[str]) -> Counter:
+    """Count occurrences of each word in the token list."""
+    return Counter(tokens)
+
+def get_top_words(counter: Counter, n: int = 5) -> list[dict]:
+    """Return the top n words with their counts as a list of dictionaries."""
+    return [{"w": word, "n": count} for word, count in counter.most_common(n)]
+
+def get_insight(total_words: int) -> str:
+    """Return a short description based on the total word count."""
+    if total_words == 0:
+        return "empty"
+    elif total_words < 50:
+        return "short"
+    elif total_words < 200:
+        return "medium"
+    else:
+        return "long"
+
+def analyze_text(text: str) -> dict:
+    """Analyze the text and return a summary with word count, top words, and insight."""
+    tokens = tokenize(text)
+    counter = count_words(tokens)
+    total = sum(counter.values())
+    top_words = get_top_words(counter)
+    insight = get_insight(total)
+
+    return {
+        "word_count": total,
+        "top": top_words,
+        "insight": insight
+    }
+
+# --- directly read from stdin when called from Node ---
+text = sys.stdin.read() or ""
+result = analyze_text(text)
+print(json.dumps(result, ensure_ascii=False))
+# ------------------------------------------------------
+
+----- frontend\index.html -----
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>InkSight</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="ink-container">
+      <h1>InkSight</h1>
+
+      <label for="file">Upload a .txt file:</label><br />
+      <input id="file" type="file" accept=".txt" /><br /><br />
+
+      <label for="text">Or paste text below:</label><br />
+      <textarea id="text" rows="10" cols="80" placeholder="Write or paste your text here..."></textarea><br />
+
+      <button id="analyzeBtn" disabled>Analyze</button>
+
+      <div id="results" style="margin-top:16px;"></div>
+
+      <br /><br />
+      <a href="http://localhost:3000/page2.html">
+        <button>Go to Second Page</button>
+      </a>
+    </div>
+
+    <script src="index.js" defer></script>
+  </body>
+</html>
+
+----- frontend\index.js -----
+// frontend/index.js
+let lastResult = null;
+
+const $ = (id) => document.getElementById(id);
+const fileInput = $('file');
+const textArea = $('text');
+const analyzeBtn = $('analyzeBtn');
+const resultsDiv = $('results');
+
+// Enable analyze button when file is uploaded or text is entered
+function checkInput() {
+  const hasFile = !!fileInput.files[0];
+  const hasText = !!textArea.value.trim();
+  
+  analyzeBtn.disabled = !hasFile && !hasText;
+  
+  // Disable textarea if file is uploaded
+  textArea.disabled = hasFile;
+  
+  // Disable file input if text is entered
+  fileInput.disabled = hasText;
+}
+
+fileInput.addEventListener('change', checkInput);
+textArea.addEventListener('input', checkInput);
+
+function renderContainers() {
+  resultsDiv.innerHTML = `
+    <div class="analysis-container">
+      <button id="sentimentBtn">Sentiment Analysis</button>
+      <div id="sentimentResults"></div>
+    </div>
+
+    <div class="analysis-container">
+      <button id="keynessBtn">Keyness Statistics</button>
+      <div id="keynessResults"></div>
+    </div>
+
+    <div class="analysis-container">
+      <button id="wordCountBtn">Word Count</button>
+      <div id="wordCountResults"></div>
+    </div>
+  `;
+
+  // Add click handlers for each button
+  $('sentimentBtn').addEventListener('click', () => {
+    const container = $('sentimentResults');
+    if (container.innerHTML) {
+      container.innerHTML = '';
+    } else {
+      renderTable(container, lastResult);
+    }
+  });
+
+  $('keynessBtn').addEventListener('click', () => {
+    const container = $('keynessResults');
+    if (container.innerHTML) {
+      container.innerHTML = '';
+    } else {
+      renderTable(container, lastResult);
+    }
+  });
+
+  $('wordCountBtn').addEventListener('click', () => {
+    const container = $('wordCountResults');
+    if (container.innerHTML) {
+      container.innerHTML = '';
+    } else {
+      renderTable(container, lastResult);
+    }
+  });
+}
+
+function renderTable(container, data) {
+  if (!data) { container.textContent = ''; return; }
+
+  const rows = (data.top || []).map(item =>
+    `<tr><td>${item.w}</td><td>${item.n}</td></tr>`
+  ).join('');
+
+  container.innerHTML = `
+    <p><b>Word count:</b> ${data.word_count ?? 0}</p>
+    <p><b>Insight:</b> ${data.insight ?? ''}</p>
+    <table border="1" cellpadding="4" cellspacing="0">
+      <thead><tr><th>Word</th><th>Count</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+analyzeBtn.addEventListener('click', async () => {
+  const f = fileInput.files[0];
+  const text = textArea.value.trim();
+  
+  if (!f && !text) { 
+    alert('Choose a .txt file or enter text first'); 
+    return; 
+  }
+
+  const fd = new FormData();
+  
+  if (f) {
+    fd.append('file', f);
+  } else {
+    // Create a blob from textarea text and send as file
+    const blob = new Blob([text], { type: 'text/plain' });
+    fd.append('file', blob, 'input.txt');
+  }
+
+  try {
+    const res = await fetch('/api/analyze-file', { method: 'POST', body: fd });
+    const data = await res.json();
+    lastResult = data;
+    renderContainers();
+  } catch (e) {
+    alert('Error analyzing file');
+  }
+});
+
+----- frontend\page2.html -----
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Second Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <h1><a href="index.html">Welcome to the second page!</a></h1>
+    <p>Nothing here yet</p>
+  </body>
+</html>
+
+
+----- frontend\styles.css -----
+/* styles.css — Light, professional, minimal */
+
+/* ---------- Design tokens ---------- */
+:root {
+  --bg: #f7f9fc;
+  --card-bg: #ffffff;
+  --text: #0f172a;          /* slate-900 */
+  --muted: #64748b;         /* slate-500 */
+  --border: #e5e7eb;        /* gray-200 */
+  --primary: #2563eb;       /* blue-600 */
+  --primary-600: #2563eb;
+  --primary-700: #1d4ed8;
+  --ring: rgba(37, 99, 235, 0.15);
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --shadow-lg: 0 10px 25px rgba(16, 24, 40, 0.08);
+  --radius: 12px;
+  --radius-sm: 10px;
+  --space: 16px;
+  --table-bg: #f9fafb;      /* light table background */
+}
+
+/* ---------- Reset ---------- */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ---------- Base ---------- */
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  color: var(--text);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, #ffffff 0%, transparent 35%),
+    radial-gradient(1000px 500px at 90% -10%, #eef2ff 0%, transparent 40%),
+    var(--bg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  padding: 24px; /* breathing room on small screens */
+}
+
+/* ---------- Container ---------- */
+.ink-container {
+  background-color: var(--card-bg);
+  padding: 32px;   /* slightly more padding for breathing */
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  text-align: center; /* center everything inside by default */
+  max-width: 720px;
+  width: 100%;
+}
+
+/* Vertical rhythm */
+.ink-container > * + * {
+  margin-top: var(--space);
+}
+
+/* ---------- Headings ---------- */
+h1 {
+  font-size: 1.875rem; /* ~30px */
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  line-height: 1.2;
+  text-align: center;   /* center top heading */
+  margin-bottom: var(--space); /* extra spacing after heading */
+}
+
+/* ---------- Labels ---------- */
+label {
+  display: block;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+/* ---------- Inputs & Textarea ---------- */
+input[type="file"],
+textarea {
+  width: 100%;
+  font: inherit;
+  color: var(--text);
+  background-color: #fff;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  box-shadow: inset 0 1px 0 rgba(16, 24, 40, 0.02);
+  transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+}
+
+textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+/* File input styling */
+input[type="file"]::-webkit-file-upload-button,
+input[type="file"]::file-selector-button {
+  font: inherit;
+  margin-right: 12px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+
+input[type="file"]::-webkit-file-upload-button:hover,
+input[type="file"]::file-selector-button:hover {
+  background: #f1f5f9;
+  border-color: #dbe2ea;
+}
+
+input[type="file"]::-webkit-file-upload-button:active,
+input[type="file"]::file-selector-button:active {
+  transform: translateY(1px);
+}
+
+/* Focus states */
+input[type="file"]:focus,
+textarea:focus {
+  border-color: var(--primary-600);
+  box-shadow: 0 0 0 4px var(--ring);
+}
+
+/* Disabled */
+input[disabled],
+textarea[disabled],
+button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  filter: saturate(0.8);
+}
+
+/* ---------- Buttons ---------- */
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background-color: var(--primary);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+  box-shadow: var(--shadow-sm);
+  margin: 0 auto; /* center buttons */
+}
+
+button:hover:not([disabled]) {
+  background-color: var(--primary-700);
+  transform: translateY(-1px);
+}
+
+button:active:not([disabled]) {
+  transform: translateY(0);
+}
+
+button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--ring);
+}
+
+/* Space when multiple buttons are present */
+button + button {
+  margin-left: 8px;
+}
+
+/* ---------- Results ---------- */
+#results {
+  margin-top: 6px;
+  color: var(--text);
+}
+
+#results p,
+#results li {
+  color: #1f2937; /* slate-800 for readable body text */
+}
+
+#results code,
+#results pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  overflow: auto;
+}
+
+/* ---------- Table styling ---------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--table-bg);
+  margin-top: var(--space);
+}
+
+th, td {
+  padding: 12px 16px;
+  text-align: center; /* center content */
+  border: 1px solid var(--border);
+}
+
+th {
+  background-color: #eef2ff;
+  font-weight: 600;
+}
+
+/* ---------- Analysis containers ---------- */
+.analysis-container {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin-top: var(--space);
+  background-color: #fafbfc;
+}
+
+.analysis-container button {
+  width: 100%;
+}
+
+.analysis-container > div {
+  margin-top: var(--space);
+}
+
+/* ---------- Motion preference ---------- */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+
