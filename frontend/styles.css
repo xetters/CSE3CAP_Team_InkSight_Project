@@ -248,7 +248,7 @@ th {
   }
 }
 
-/*file-type message starts*/
+/*file-type message starts, maybe should merge with the input filed above?*/
 .file-upload-row {
   display: flex;
   align-items: center;
