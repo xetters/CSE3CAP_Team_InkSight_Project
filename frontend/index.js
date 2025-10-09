@@ -6,6 +6,33 @@ const fileInput = $('file');
 const analyzeBtn = $('analyzeBtn');
 const showBtn = $('showBtn');
 const resultsDiv = $('results');
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB, can config
+const removeFileBtn = document.getElementById('removeFileBtn');
+
+//file size error handling, box is under analyze button. need change later
+fileInput.addEventListener('change', () => {
+  const f = fileInput.files[0];
+  if (f && f.size > MAX_FILE_SIZE) {
+    fileInput.value = '';
+    resultsDiv.innerHTML = `<div style="color:red; border:1px solid red; padding:8px; margin-bottom:8px;">
+      Error: File size exceeds 5MB limit.
+    </div>`;
+  }
+});
+
+// to hide the "file-type message" text when a file is uploaded:
+document.getElementById('file').addEventListener('change', function() {
+  document.querySelector('.file-types').style.display = 'none';
+});
+
+fileInput.addEventListener('change', function() {
+  removeFileBtn.style.display = fileInput.files.length ? 'inline-block' : 'none';
+});
+
+removeFileBtn.addEventListener('click', function() {
+  fileInput.value = '';
+  removeFileBtn.style.display = 'none';
+});
 
 function render(data) {
   if (!data) { resultsDiv.textContent = ''; return; }

@@ -10,8 +10,14 @@
     <div class="ink-container">
       <h1>InkSight</h1>
 
-      <label for="file">Upload a .txt file:</label><br />
-      <input id="file" type="file" accept=".txt" /><br /><br />
+      <div class="file-upload-row">
+      <input id="file" type="file" accept=".txt,.docx,.md,.odt" autocomplete="off" />
+      <span class="file-types">Only Allowed: TXT, DOCX, MD, ODT</span>
+      </div><br />
+      <!--considered file type: .rtf(not really since who write stories on those?) and .epub for amazon kindle books-->
+
+      <!-- Remove file button only appears when a file is uploaded -->
+      <button id="removeFileBtn" class="remove-btn" style="margin-left:10px; display:none;">Remove File</button><br>
 
       <label for="text">Or paste text below:</label><br />
       <textarea id="text" rows="10" cols="80" placeholder="Feature pending..."></textarea><br />
