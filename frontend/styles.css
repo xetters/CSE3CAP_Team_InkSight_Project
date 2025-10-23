@@ -1004,3 +1004,93 @@ th {
   .sentiment-bar-container { height: 150px; gap: 1rem; }
   .sentiment-bar-fill { width: 30px; }
 }
+
+/* Keyness Statistics Styling */
+.info-box {
+  background: #eff6ff;
+  border-left: 4px solid var(--primary);
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 4px;
+}
+
+.info-box p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: #1e40af;
+  line-height: 1.6;
+}
+
+.info-box.warning {
+  background: #fef3c7;
+  border-left-color: #f59e0b;
+}
+
+.info-box.warning p {
+  color: #92400e;
+}
+
+.keyness-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.keyness-stat-item {
+  background: var(--light-gray);
+  padding: 1rem;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.keyness-stat-label {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.keyness-stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary);
+}
+
+.chart-container {
+  position: relative;
+  height: 600px;
+  margin: 2rem 0;
+  padding: 1rem;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legend-color {
+  width: 20px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.color-user {
+  background: linear-gradient(90deg, #93c5fd, #3b82f6);
+}
+
+.color-reference {
+  background: linear-gradient(90deg, #86efac, #22c55e);
+}
