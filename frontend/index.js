@@ -144,6 +144,12 @@ async function init() {
   function checkInput() {
     const hasFile = !!fileInput.files[0];
     const hasText = textArea.value.trim().length > 0;
+
+    // Disable textarea if file is selected, disable file upload if text is entered
+    textArea.disabled = hasFile;
+    uploadArea.style.pointerEvents = hasText ? 'none' : 'auto';
+    uploadArea.style.opacity = hasText ? '0.5' : '1';
+
     analyzeBtn.disabled = !(hasFile || hasText);
   }
 
@@ -393,6 +399,12 @@ async function init() {
 
     lastResult = null;
     sentimentData = null;
+
+    // Re-enable both input methods
+    textArea.disabled = false;
+    uploadArea.style.pointerEvents = 'auto';
+    uploadArea.style.opacity = '1';
+
     closeModal('clearModal');
   }
 
