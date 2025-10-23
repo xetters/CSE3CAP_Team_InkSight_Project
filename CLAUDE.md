@@ -29,12 +29,13 @@ InkSight is a text analysis web application that provides word frequency analysi
 
 ### Data Flow
 
-1. User uploads `.txt` file or pastes text in frontend
+1. User uploads file (`.txt`, `.docx`, `.md`, or `.odt`) in frontend
 2. Frontend sends multipart form data to `/api/analyze-file` or `/api/sentiment`
-3. Express routes spawn Python subprocess and pipe file content via stdin
-4. Python script processes text and outputs JSON to stdout
-5. Node.js parses JSON and returns to frontend
-6. Frontend renders results in cards with visualizations
+3. Express routes extract text from file buffer based on file type
+4. Express routes spawn Python subprocess and pipe extracted text via stdin
+5. Python script processes text and outputs JSON to stdout
+6. Node.js parses JSON and returns to frontend
+7. Frontend renders results in cards with visualizations
 
 ## Common Commands
 
@@ -95,17 +96,21 @@ pip install -r api/utils/requirements.txt
 
 ## Key Implementation Details
 
-### File Upload Constraints
+### File Upload and Text Extraction
 
 - Maximum file size: 5MB (enforced in `frontend/index.js:15`)
-- Accepted file types: `.txt`, `.docx`, `.md`, `.odt` (only `.txt` fully supported currently)
+- Accepted file types: `.txt`, `.docx`, `.md`, `.odt`
 - Files are processed in-memory using multer with `memoryStorage()`
+- Text extraction happens in Node.js before sending to Python:
+  - `.txt` and `.md` files: direct UTF-8 decoding
+  - `.docx` files: extracted using `mammoth` library
+  - `.odt` files: fallback to UTF-8 (full support requires additional library)
 - Validation occurs on both frontend and backend
 
 ### Python Subprocess Communication
 
 - Python scripts are spawned with `child_process.spawn()`
-- Input text is written to stdin: `py.stdin.write(req.file.buffer.toString())`
+- Extracted text is written to stdin: `py.stdin.write(text)`
 - JSON output is collected from stdout and parsed
 - Error handling captures stderr for debugging
 
@@ -136,22 +141,26 @@ The current sentiment implementation in `api/utils/sentiment.py` uses random dat
 
 ### File Type Support
 
-Currently only `.txt` files are fully processed. To add support for `.docx`, `.md`, `.odt`:
+Currently `.txt`, `.md`, and `.docx` files are fully supported. To add full ODT support:
 
-1. Add appropriate Python libraries (e.g., `python-docx`, `odfpy`) to requirements.txt
-2. Detect file type in Python scripts using file extension
-3. Add parsing logic for each format before text analysis
+1. Install a Node.js ODT parsing library
+2. Update the `extractText()` function in `api/routes.js` to handle ODT files
+3. The function already has a placeholder for ODT support
 
 ## Project Structure Summary
 
 ```
 api/
   app.js              # Express server entry point
-  routes.js           # API endpoints with Python subprocess spawning
+  routes.js           # API endpoints with text extraction and Python subprocess spawning
   utils/
     analyze.py        # Word frequency and insight analysis
     sentiment.py      # Sentiment analysis (placeholder)
     requirements.txt  # Python dependencies
+
+documentation/
+  user-flow.md        # User interaction flow
+  data-flow.md        # Technical data processing flow
 
 frontend/
   index.html          # Main UI structure

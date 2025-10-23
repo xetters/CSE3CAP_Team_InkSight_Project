@@ -12,6 +12,7 @@
   "description": "",
   "dependencies": {
     "express": "^5.1.0",
+    "mammoth": "^1.11.0",
     "multer": "^2.0.2",
     "next": "^15.5.3",
     "react": "^19.1.1",

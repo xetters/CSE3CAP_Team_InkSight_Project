@@ -58,9 +58,11 @@ python --version
    http://localhost:3000
    ```
 
-3. **Upload a `.txt` file** or paste text directly to analyze:
+3. **Upload a file** (`.txt`, `.docx`, `.md`, or `.odt`) to analyze:
    - Word frequency and insights
    - Sentiment analysis (dummy implementation - replace with FastText later)
+   - DOCX files are fully supported with text extraction
+   - ODT support is partial (requires additional library)
 
 ---
 
@@ -69,4 +71,5 @@ python --version
 - The application runs on **port 3000** by default
 - Python analysis is performed via a spawned subprocess, so Python must be accessible in your system PATH
 - File uploads are handled in-memory using `multer`
+- Text extraction from DOCX files is handled by the `mammoth` library
 - **Sentiment analysis**: Currently uses random data for testing. To integrate FastText/NLP, replace the `analyze_sentiment()` function in `api/utils/sentiment.py`
