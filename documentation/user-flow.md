@@ -2,39 +2,54 @@
 
 ## Overview
 
-InkSight is a privacy-focused NLP tool that analyzes user-uploaded text for word frequency patterns and emotional tone. All processing happens locally with no data transmission to external servers.
+InkSight is a privacy-focused text analysis tool that provides comprehensive writing insights through word frequency analysis, keyness statistics, and sentiment analysis. All processing occurs locally with zero external data transmission.
 
-## File Upload and Analysis
+## User Journey
 
-1. User opens the application in their web browser
-2. User selects a file (TXT, DOCX, MD, ODT) using the file picker or pastes text directly
-3. Frontend validates file size (max 5MB) and extension
-4. User selects which analysis types to run:
-   - Word Analysis (identifies top words and their frequencies)
-   - Keyness Statistics (compares against reference corpus using log-likelihood)
-   - Sentiment Analysis (classifies emotional tone as positive, negative, or neutral)
-5. User clicks the "Analyze My Writing" button
-6. Frontend sends file/text to backend API endpoints
-7. User sees loading state while analysis runs
-8. Results appear as expandable cards with detailed insights
-9. User can download results as HTML file (also printable/savable to PDF)
-10. User can clear results and start over
-11. All data is automatically cleared on page refresh, browser close, or manual clear
+### 1. File Upload
+- User accesses the application through their web browser
+- Selects a document (TXT, DOCX, MD, or ODT format) or pastes text directly
+- System validates file size (maximum 5MB) and format compatibility
 
-## Technology Stack
+### 2. Analysis Selection
+User chooses from three powerful analysis types:
 
-- **Frontend:** Vanilla JavaScript with no external dependencies
-- **Backend:** Node.js with Express.js framework
-- **File Processing:** Multer for in-memory file handling
-- **Text Extraction:** Mammoth for DOCX, native UTF-8 for TXT/MD, with ODT fallback support
-- **Python Scripts:** Natural Language processing using open-source libraries
-  - NLTK (Natural Language Toolkit) for tokenization and text processing
-  - FastText for advanced word embeddings and sentiment analysis
+- **Word Analysis** - Identifies most frequently used words with occurrence counts
+- **Keyness Statistics** - Highlights distinctive words compared to reference corpus using log-likelihood calculations
+- **Sentiment Analysis** - Classifies emotional tone with positive, negative, and neutral breakdowns
 
-## Privacy Assurance
+### 3. Processing
+- User clicks "Analyze My Writing" to initiate analysis
+- Loading indicator displays while processing occurs
+- Multiple analyses run in parallel when selected
 
-- All processing happens in-memory only on your browser and our servers
-- Text is never stored in any database or external service
-- No third-party data sharing agreements
-- NLP libraries (NLTK, FastText) are free and open source with no commercial restrictions
-- Data is automatically deleted after analysis and cleared when you refresh or close the page
+### 4. Results Viewing
+- Results appear in clean, expandable cards
+- Interactive visualizations display insights
+- Detailed breakdowns available for each analysis type
+- Sentiment includes sentence-by-sentence analysis
+
+### 5. Export Options
+- Download complete results as standalone HTML file
+- Print or save to PDF directly from browser
+- Individual section downloads available
+
+### 6. Session Management
+- Clear results anytime to start fresh analysis
+- All data automatically purged on page refresh or browser close
+- No persistent storage ensures complete privacy
+
+## Technology Foundation
+
+**Frontend:** Vanilla JavaScript - no external dependencies
+**Backend:** Node.js with Express framework
+**NLP Processing:** NLTK for tokenization, FastText for sentiment analysis
+**File Handling:** In-memory processing with Multer and Mammoth libraries
+
+## Privacy Commitment
+
+- **Zero Storage** - No databases, no file systems, no logs
+- **In-Memory Only** - All processing uses temporary buffers
+- **Local Processing** - No external API calls or third-party services
+- **Open Source** - NLTK and FastText are free, transparent tools
+- **Automatic Cleanup** - Data purged immediately after analysis completion

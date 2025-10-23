@@ -1,99 +1,72 @@
 # Data Flow
 
-## Upon File Upload
+## File Upload Process
 
-1. User selects file via file picker or paste text in textarea
-2. Frontend validates file size (max 5MB) and extension (TXT, DOCX, MD, ODT)
-3. File buffer stored temporarily in browser memory only
-4. Analyze button becomes enabled
-5. No data is transmitted to server until user clicks Analyze
+1. User selects file via picker or pastes text directly
+2. Frontend validates file size (max 5MB) and format (TXT, DOCX, MD, ODT)
+3. File buffer held in browser memory only - no server transmission until analysis
+4. Analyze button activates once validation passes
 
-## Upon Analysis Selection (Word Analysis)
+## Analysis Pipeline
 
-1. User selects "Word Analysis" checkbox
-2. Browser packages selected file/text into multipart form data
-3. HTTP POST request sent to `/api/analyze-file` Express endpoint
-4. Multer middleware receives file buffer and stores in memory (not on disk)
-5. Node.js extracts plain text from file buffer based on file type:
-   - TXT/MD files: Direct UTF-8 decoding
-   - DOCX files: Mammoth library extracts text
-   - ODT files: Fallback to UTF-8 decoding (future: full ODT library support)
-6. Node.js spawns Python subprocess running `analyze.py`
-7. Extracted text sent to Python process via stdin pipe
-8. Python receives text and performs NLTK-based tokenization:
-   - Tokenizes text into lowercase word tokens using regex pattern `[A-Za-z']+`
-   - Filters to alphabetic characters and apostrophes only
-9. Counts word frequencies using Python Counter object
-10. Returns top N words (default: top 5) with occurrence counts as JSON
-11. Python outputs JSON results to stdout pipe
-12. Node.js collects output and parses JSON
-13. Express sends JSON response back to browser
-14. Frontend JavaScript renders word frequency table with styled cards
-15. Text is immediately cleared from memory after response
+### Word Analysis
+**Endpoint:** `POST /api/analyze-file`
 
-## Upon Analysis Selection (Keyness Statistics)
+1. Browser packages file as multipart form data
+2. Express receives file buffer in-memory (no disk writes)
+3. Node.js extracts plain text based on format
+4. Python subprocess spawned with text piped via stdin
+5. NLTK tokenizes text and counts word frequencies
+6. Top words returned as JSON via stdout
+7. Frontend renders frequency table in styled cards
+8. All data cleared from memory immediately
 
-1. User selects "Word Analysis" checkbox with comparative mode enabled
-2. Backend process identical to Word Analysis, but with reference corpus comparison
-3. Python script (analyze.py) implements log-likelihood calculation:
-   - Tokenizes user text using NLTK tokenization
-   - Compares word frequencies against reference corpus using log-likelihood formula
-   - Formula: 2 * sum(log(observed/expected)) for each word
-   - Filters words by minimum length threshold and significance score
-   - Sorts results by absolute log-likelihood score descending
-4. Returns ranked keywords with significance scores
-5. Frontend displays top distinctive keywords that differentiate user's writing
+### Keyness Statistics
+**Endpoint:** `POST /api/analyze-file` (with comparative mode)
 
-## Upon Analysis Selection (Sentiment Analysis)
+1. Same upload process as Word Analysis
+2. Python compares user text against reference corpus
+3. **Log-likelihood calculation** identifies distinctive words:
+   - Measures statistical significance of word usage
+   - Filters by minimum thresholds and significance scores
+   - Ranks results by distinctiveness
+4. Returns ranked keywords showing writing uniqueness
+5. Frontend displays top distinctive words with significance indicators
 
-1. User selects "Sentiment Analysis" checkbox
-2. HTTP POST request sent to `/api/sentiment` Express endpoint
-3. Multer middleware receives file buffer and stores in memory
-4. Node.js extracts plain text using same method as word analysis
-5. Node.js spawns Python subprocess running `sentiment.py`
-6. Extracted text sent to Python process via stdin pipe
-7. Python receives text and performs FastText-based sentiment analysis:
-   - Tokenizes text into sentences using regex split on `[.!?]+`
-   - For each sentence, loads FastText pre-trained model
-   - Generates word embeddings using FastText to understand semantic meaning
-   - Applies sentiment classification model (trained on annotated sentiment corpus)
-   - Assigns sentiment labels: positive, negative, or neutral
-   - Calculates confidence scores for each classification
-8. Calculates overall statistics:
-   - Positive/negative/neutral ratios
-   - Average sentiment score across all sentences
-   - Determines overall text sentiment based on aggregated scores
-9. Returns detailed sentiment breakdown with per-sentence analysis as JSON
-10. Python outputs JSON to stdout pipe
-11. Node.js collects output and parses JSON
-12. Express sends JSON response back to browser
-13. Frontend JavaScript renders sentiment visualization with bar charts and sentence breakdown
-14. Text is immediately cleared from memory after response
+### Sentiment Analysis
+**Endpoint:** `POST /api/sentiment`
 
-## Upon Clearing Results
+1. Browser sends file to dedicated sentiment endpoint
+2. Node.js extracts text and spawns Python subprocess
+3. **FastText sentiment processing**:
+   - Splits text into sentences
+   - Generates word embeddings for semantic understanding
+   - Applies pre-trained sentiment classification model
+   - Assigns positive, negative, or neutral labels with confidence scores
+4. Aggregates statistics across all sentences
+5. Returns detailed breakdown with overall sentiment metrics
+6. Frontend renders visualizations with bar charts and sentence analysis
 
-1. User clicks "Clear Results" button or manually refreshes page
-2. Frontend removes all result cards from analysis container
-3. Frontend resets stored analysis data (lastResult, sentimentData)
-4. Upload area returns to initial state
-5. Analyze button disabled until new file/text provided
-6. All data in browser memory is garbage collected
+## Privacy Safeguards
 
-## Privacy Implementation
+- **No Persistent Storage** - Text never touches disk or database
+- **In-Memory Processing** - Buffers freed immediately after response
+- **Local NLP** - All processing occurs on application server
+- **Zero Logging** - No text content logged or tracked
+- **Automatic Cleanup** - Memory cleared post-analysis
+- **No External APIs** - NLTK and FastText run entirely locally
 
-- **No Database Storage:** Text never reaches any persistent storage
-- **In-Memory Only:** All processing uses memory buffers that are immediately freed
-- **No External Calls:** All NLP processing happens locally on your server
-- **No Logging:** Uploaded text is not logged or tracked
-- **Automatic Deletion:** Data is cleared from memory immediately after analysis and JSON response
-- **Browser Cleanup:** Page refresh or close triggers automatic garbage collection
-- **Open Source Tools:** NLTK and FastText are free/open source with no licensing restrictions
-- **No Third-Party Trackers:** No Google Analytics, Mixpanel, or similar services tracking user behavior
+## Error Management
 
-## Error Handling
+- Input validation errors returned before processing
+- Python subprocess errors captured with descriptive messages
+- Network failures handled gracefully
+- All error paths maintain privacy guarantees (no server-side logs)
 
-- File validation errors returned immediately without processing
-- Python subprocess errors captured and returned with descriptive messages
-- Invalid JSON from Python subprocess caught and error message displayed
-- Network errors handled gracefully with user-friendly error messages
-- All error scenarios maintain privacy (no error logs stored server-side)
+## Results Management
+
+**Clear Action:**
+1. User clicks Clear or refreshes page
+2. Frontend removes all result cards
+3. Analysis data reset to initial state
+4. Browser memory garbage collected automatically
