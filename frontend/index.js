@@ -20,8 +20,19 @@ const EMPTY_STATE_HTML = `
 
 // Modal functions
 function openModal(modalId) {
-  document.getElementById(modalId).style.display = 'block';
+  const modal = document.getElementById(modalId);
+  modal.style.display = 'block';
   document.body.style.overflow = 'hidden';
+
+  // Initialize pagination buttons
+  const pages = modal.querySelectorAll('.modal-page');
+  if (pages.length > 0) {
+    // Reset to first page
+    pages.forEach((page, index) => {
+      page.classList.toggle('active', index === 0);
+    });
+    updatePaginationInfo(modalId, 1, pages.length);
+  }
 }
 
 function closeModal(modalId) {
@@ -31,6 +42,48 @@ function closeModal(modalId) {
 
 window.openModal = openModal;
 window.closeModal = closeModal;
+
+// Modal pagination functions
+function nextPage(modalId) {
+  const modal = document.getElementById(modalId);
+  const pages = modal.querySelectorAll('.modal-page');
+  const currentPage = Array.from(pages).findIndex(p => p.classList.contains('active'));
+
+  if (currentPage < pages.length - 1) {
+    pages[currentPage].classList.remove('active');
+    pages[currentPage + 1].classList.add('active');
+    updatePaginationInfo(modalId, currentPage + 2, pages.length);
+  }
+}
+
+function previousPage(modalId) {
+  const modal = document.getElementById(modalId);
+  const pages = modal.querySelectorAll('.modal-page');
+  const currentPage = Array.from(pages).findIndex(p => p.classList.contains('active'));
+
+  if (currentPage > 0) {
+    pages[currentPage].classList.remove('active');
+    pages[currentPage - 1].classList.add('active');
+    updatePaginationInfo(modalId, currentPage, pages.length);
+  }
+}
+
+function updatePaginationInfo(modalId, currentPage, totalPages) {
+  const modal = document.getElementById(modalId);
+  const paginationInfo = modal.querySelector('.pagination-info');
+  const currentPageSpan = paginationInfo.querySelector('.current-page');
+  const prevBtn = modal.querySelector('.prev-btn');
+  const nextBtn = modal.querySelector('.next-btn');
+
+  currentPageSpan.textContent = currentPage;
+
+  // Disable buttons at start/end
+  prevBtn.disabled = currentPage === 1;
+  nextBtn.disabled = currentPage === totalPages;
+}
+
+window.nextPage = nextPage;
+window.previousPage = previousPage;
 
 window.onclick = function(event) {
   if (event.target.classList.contains('modal')) {

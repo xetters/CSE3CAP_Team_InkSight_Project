@@ -66,6 +66,18 @@ body {
   color: var(--primary);
 }
 
+@media (max-width: 768px) {
+  .nav-links a {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .nav-links a {
+    font-size: 0.75rem;
+  }
+}
+
 /* Main layout */
 .main-wrapper {
   background-color: #ffffff;
@@ -608,14 +620,16 @@ th {
 
 .modal-content {
   background-color: #fefefe;
-  margin: 10% auto;
+  margin: 5% auto;
   padding: 3rem;
   border: 1px solid var(--border);
   border-radius: 8px;
   width: 90%;
   max-width: 700px;
-  max-height: 80vh;
-  overflow-y: auto;
+  max-height: 90vh;
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .close {
@@ -665,7 +679,7 @@ th {
 }
 
 .modal-content li:before {
-  content: "→";
+  content: "•";
   position: absolute;
   left: 0;
   color: var(--primary);
@@ -675,6 +689,78 @@ th {
 .modal-content h3 {
   margin-top: 2rem;
   margin-bottom: 0.75rem;
+}
+
+/* Modal Pagination */
+.modal-pages-container {
+  position: relative;
+  min-height: 300px;
+  max-height: 50vh;
+  overflow-y: auto;
+  margin-bottom: 2rem;
+  padding-right: 0.5rem;
+}
+
+.modal-page {
+  display: none;
+  animation: fadeIn 0.3s ease-in;
+}
+
+.modal-page.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.pagination-nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.pagination-btn {
+  background: var(--light-gray);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  font-size: 0.9rem;
+  color: var(--muted);
+  min-width: 80px;
+  text-align: center;
 }
 
 .modal-actions {
