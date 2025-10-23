@@ -2,35 +2,117 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>InkSight</title>
+    <title>InkSight - Writer's Insights</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <div class="ink-container">
-      <h1>InkSight</h1>
+    <nav class="nav-bar">
+      <div class="nav-container">
+        <div class="logo">InkSight</div>
+        <div class="nav-links">
+          <a href="#" class="active" id="homeLink">Home</a>
+          <a href="#" id="aboutLink">About</a>
+          <a href="#" id="howItWorksLink">How It Works</a>
+          <a href="#" id="privacyLink">Privacy</a>
+        </div>
+      </div>
+    </nav>
 
-      <div class="file-upload-row">
-      <input id="file" type="file" accept=".txt,.docx,.md,.odt" autocomplete="off" />
-      <span class="file-types">Only Allowed: TXT, DOCX, MD, ODT</span>
-      </div><br />
-      <!--considered file type: .rtf(not really since who write stories on those?) and .epub for amazon kindle books-->
+    <div class="main-wrapper">
+      <div class="ink-container">
+        <header class="page-header">
+          <h1>Discover Your Creative Voice</h1>
+          <p class="tagline">"Tell me something I don't know"</p>
+          <span class="privacy-badge">Your work stays private - deleted after analysis</span>
+        </header>
 
-      <!-- Remove file button only appears when a file is uploaded -->
-      <button id="removeFileBtn" class="remove-btn" style="margin-left:10px; display:none;">Remove File</button><br>
+        <div class="content-grid">
+          <div class="upload-section">
+            <h2>Upload Your Writing</h2>
 
-      <label for="text">Or paste text below:</label><br />
-      <textarea id="text" rows="10" cols="80" placeholder="Write or paste your text here..."></textarea><br />
+            <div class="file-upload-row" id="uploadArea">
+              <input id="file" type="file" accept=".txt,.docx,.md,.odt" autocomplete="off" />
+              <span class="file-types">TXT, DOCX, MD, ODT</span>
+            </div>
 
-      <button id="analyzeBtn" disabled>Analyze</button>
+            <div id="fileName" class="file-selected" style="display: none;">
+              <strong>Selected:</strong> <span id="fileNameText"></span>
+            </div>
 
-      <div id="results" style="margin-top:16px;"></div>
+            <button id="removeFileBtn" class="remove-btn" style="display:none;">Remove File</button>
 
-      <br /><br />
-      <a href="http://localhost:3000/page2.html">
-        <button>Go to Second Page</button>
-      </a>
+            <div class="divider">
+              <span>OR</span>
+            </div>
+
+            <label for="text">Paste text below:</label>
+            <textarea id="text" rows="8" placeholder="Write or paste your text here..."></textarea>
+
+            <div class="analysis-options">
+              <div class="options-toggle" id="optionsToggle">
+                <span><strong>Analysis Options</strong></span>
+                <span class="chevron">▼</span>
+              </div>
+              
+              <div class="options-content" id="optionsContent">
+                <div class="options-list">
+                  <div class="option">
+                    <label>
+                      <input type="checkbox" checked id="keynessCheck">
+                      <span>
+                        <strong>Word Analysis</strong><br>
+                        <small>Identify distinctive words and patterns</small>
+                      </span>
+                    </label>
+                  </div>
+
+                  <div class="option">
+                    <label>
+                      <input type="checkbox" checked id="sentimentCheck">
+                      <span>
+                        <strong>Sentiment Analysis</strong><br>
+                        <small>Explore emotional tones</small>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button id="analyzeBtn" disabled>Analyze My Writing</button>
+
+            <p class="info-text">
+              ℹ️ Your text will be processed and deleted immediately after analysis
+            </p>
+          </div>
+
+          <div class="results-section">
+            <div class="results-header">
+              <h2>Your Insights</h2>
+              <div class="results-actions">
+                <button class="download-btn" id="downloadBtn" style="display: none;">Download All</button>
+                <button class="clear-btn" id="clearBtn" style="display: none;">Clear Results</button>
+              </div>
+            </div>
+
+            <div id="results">
+              <div class="empty-state">
+                <div class="empty-state-icon">🔍</div>
+                <h3>No Analysis Yet</h3>
+                <p>Upload your writing to discover insights about your creative style</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="page-footer">
+          <p>Created by Team Three Musketeers 2025</p>
+        </footer>
+      </div>
     </div>
+
+    <div id="modals-container"></div>
 
     <script src="index.js" defer></script>
   </body>
