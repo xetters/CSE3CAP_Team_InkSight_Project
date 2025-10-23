@@ -83,4 +83,8 @@ router.post('/sentiment', upload.single('file'), async (req, res) => {
   }
 });
 
+// Add GET /api/corpora route → call keynessController.getAvailableCorpora()
+// Add POST /api/keyness-stats route → call keynessController.analyzeKeyness()
+// Import keynessController
+
 module.exports = router;
