@@ -13,6 +13,13 @@ async function loadModals() {
 }
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
+const EMPTY_STATE_HTML = `
+  <div class="empty-state">
+    <div class="empty-state-icon">🔍</div>
+    <h3>No Analysis Yet</h3>
+    <p>Upload your writing to discover insights about your creative style</p>
+  </div>
+`;
 
 // Modal functions
 function openModal(modalId) {
@@ -50,19 +57,12 @@ async function init() {
   const uploadArea = $('uploadArea');
 
   // Navigation
-  $('aboutLink').addEventListener('click', (e) => {
-    e.preventDefault();
-    openModal('aboutModal');
-  });
-
-  $('howItWorksLink').addEventListener('click', (e) => {
-    e.preventDefault();
-    openModal('howItWorksModal');
-  });
-
-  $('privacyLink').addEventListener('click', (e) => {
-    e.preventDefault();
-    openModal('privacyModal');
+  const navModals = { aboutLink: 'aboutModal', howItWorksLink: 'howItWorksModal', privacyLink: 'privacyModal' };
+  Object.entries(navModals).forEach(([link, modal]) => {
+    $(link).addEventListener('click', (e) => {
+      e.preventDefault();
+      openModal(modal);
+    });
   });
 
   $('homeLink').addEventListener('click', (e) => {
@@ -155,6 +155,19 @@ async function init() {
 
   textArea.addEventListener('input', checkInput);
 
+  // Helper to create FormData
+  function createFormData() {
+    const formData = new FormData();
+    const file = fileInput.files[0];
+    if (file) {
+      formData.append('file', file);
+    } else {
+      const blob = new Blob([textArea.value.trim()], { type: 'text/plain' });
+      formData.append('file', blob, 'pasted-text.txt');
+    }
+    return formData;
+  }
+
   // Analysis
   analyzeBtn.addEventListener('click', async () => {
     const file = fileInput.files[0];
@@ -173,21 +186,13 @@ async function init() {
     resultsDiv.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>Processing your text...</p></div>';
 
     try {
-      const formData = new FormData();
-      if (file) {
-        formData.append('file', file);
-      } else {
-        const blob = new Blob([text], { type: 'text/plain' });
-        formData.append('file', blob, 'pasted-text.txt');
-      }
-
       let wordData = null;
       let sentData = null;
 
       if (options.keyness) {
         const res = await fetch('/api/analyze-file', {
           method: 'POST',
-          body: formData
+          body: createFormData()
         });
 
         if (!res.ok) throw new Error('Word analysis failed');
@@ -196,17 +201,9 @@ async function init() {
       }
 
       if (options.sentiment) {
-        const formData2 = new FormData();
-        if (file) {
-          formData2.append('file', file);
-        } else {
-          const blob = new Blob([text], { type: 'text/plain' });
-          formData2.append('file', blob, 'pasted-text.txt');
-        }
-
         const sentRes = await fetch('/api/sentiment', {
           method: 'POST',
-          body: formData2
+          body: createFormData()
         });
 
         if (sentRes.ok) {
@@ -380,13 +377,7 @@ async function init() {
   }
 
   function confirmClear() {
-    resultsDiv.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-state-icon">🔍</div>
-        <h3>No Analysis Yet</h3>
-        <p>Upload your writing to discover insights about your creative style</p>
-      </div>
-    `;
+    resultsDiv.innerHTML = EMPTY_STATE_HTML;
     downloadBtn.style.display = 'none';
     clearBtn.style.display = 'none';
 
