@@ -73,3 +73,19 @@ python --version
 - File uploads are handled in-memory using `multer`
 - Text extraction from DOCX files is handled by the `mammoth` library
 - **Sentiment analysis**: Currently uses random data for testing. To integrate FastText/NLP, replace the `analyze_sentiment()` function in `api/utils/sentiment.py`
+
+---
+
+## Quick Setup (One Command)
+
+If you have Node.js and Python installed, install all dependencies with a single command:
+
+```bash
+npm run full-setup
+```
+
+This command will:
+- Install root dependencies
+- Install API dependencies
+- Install frontend dependencies
+- Install Python dependencies

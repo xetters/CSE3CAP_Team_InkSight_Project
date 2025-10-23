@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "start-api": "node api/app.js",
-    "open-browser": "node -e \"const { exec } = require('child_process'); const url = 'http://localhost:3000'; const cmd = process.platform === 'win32' ? `start ${url}` : process.platform === 'darwin' ? `open ${url}` : `xdg-open ${url}`; exec(cmd);\""
+    "open-browser": "node -e \"const { exec } = require('child_process'); const url = 'http://localhost:3000'; const cmd = process.platform === 'win32' ? `start ${url}` : process.platform === 'darwin' ? `open ${url}` : `xdg-open ${url}`; exec(cmd);\"",
+    "full-setup": "npm install && npm install --prefix api && npm install --prefix frontend && pip install -r api/utils/requirements.txt"
   },
   "keywords": [],
   "author": "",
