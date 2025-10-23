@@ -93,6 +93,10 @@ async function init() {
     handleFileSelection();
   });
 
+  uploadArea.addEventListener('click', () => {
+    fileInput.click();
+  });
+
   function handleFileSelection() {
     const file = fileInput.files[0];
     if (file) {
@@ -122,7 +126,9 @@ async function init() {
     uploadArea.classList.remove('dragover');
     const files = e.dataTransfer.files;
     if (files.length > 0) {
-      fileInput.files = files;
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(files[0]);
+      fileInput.files = dataTransfer.files;
       handleFileSelection();
     }
   });
