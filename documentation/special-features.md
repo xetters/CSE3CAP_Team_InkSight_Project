@@ -9,3 +9,4 @@
 - **Fully Local Processing** - FastText and NLTK models loaded locally, no external API calls (could be an offline application because of this)
 - **Privacy-Focused Design** - Input text never logged to files or console
 - **Commercial-License-Free** - NLP processing runs locally in app using open-source models
+- **Adaptive/Expandable App Framework** - NLP processing can be easily upgraded to have more features (Such as adding more corpora for keyness statistics)
