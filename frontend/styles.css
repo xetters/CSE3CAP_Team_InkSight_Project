@@ -439,10 +439,46 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s;
+}
+
+.result-card-header:hover {
+  background: #e5e7eb;
 }
 
 .result-card-header h3 {
   margin: 0;
+  flex-grow: 1;
+}
+
+.result-card-header .card-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-left: 1rem;
+}
+
+.result-card-toggle {
+  font-size: 1.2rem;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.result-card-toggle.collapsed {
+  transform: rotate(-90deg);
+}
+
+.result-card-content {
+  max-height: none;
+  overflow: visible;
+  transition: max-height 0.3s ease-out;
+}
+
+.result-card-content.collapsed {
+  max-height: 0;
+  overflow: hidden;
 }
 
 .analysis-content {

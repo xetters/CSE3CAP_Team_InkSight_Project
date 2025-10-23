@@ -233,11 +233,16 @@ async function init() {
     if (options.keyness && wordData) {
       html += `
         <div class="result-card">
-          <div class="result-card-header">
+          <div class="result-card-header" onclick="toggleCardContent(event)">
             <h3>Word Analysis - Your Distinctive Words</h3>
-            <button class="section-download" onclick="downloadSection('word-analysis')">Download</button>
+            <div class="card-actions">
+              <button class="section-download" onclick="event.stopPropagation(); downloadSection('word-analysis')">Download</button>
+              <div class="result-card-toggle">▼</div>
+            </div>
           </div>
-          ${renderWordAnalysis(wordData)}
+          <div class="result-card-content">
+            ${renderWordAnalysis(wordData)}
+          </div>
         </div>
       `;
     }
@@ -245,14 +250,40 @@ async function init() {
     if (options.sentiment && sentData) {
       html += `
         <div class="result-card">
-          <div class="result-card-header">
+          <div class="result-card-header" onclick="toggleCardContent(event)">
             <h3>Sentiment Analysis</h3>
-            <button class="section-download" onclick="downloadSection('sentiment')">Download</button>
+            <div class="card-actions">
+              <button class="section-download" onclick="event.stopPropagation(); downloadSection('sentiment')">Download</button>
+              <div class="result-card-toggle">▼</div>
+            </div>
           </div>
-          ${renderSentiment(sentData)}
+          <div class="result-card-content">
+            ${renderSentiment(sentData)}
+          </div>
         </div>
       `;
     }
+
+    // Add placeholder keyness statistics section
+    html += `
+      <div class="result-card">
+        <div class="result-card-header" onclick="toggleCardContent(event)">
+          <h3>Keyness Statistics (Coming Soon)</h3>
+          <div class="card-actions">
+            <div class="result-card-toggle">▼</div>
+          </div>
+        </div>
+        <div class="result-card-content">
+          <div class="analysis-content">
+            <div style="text-align: center; padding: 2rem; color: var(--muted);">
+              <p><strong>Keyness Statistics</strong></p>
+              <p>This feature will analyze distinctive keywords and their statistical significance in your text.</p>
+              <p style="font-size: 0.9rem; margin-top: 1rem;">Loading from endpoint: <code>/api/keyness-stats</code></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
 
     if (!html) {
       html = '<div class="empty-state"><p>No results to display. Please select at least one analysis option.</p></div>';
@@ -408,11 +439,24 @@ async function init() {
   });
 }
 
-// Utility
+// Utility functions
 function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
 }
+
+function toggleCardContent(event) {
+  // Find the closest result-card
+  const card = event.currentTarget.closest('.result-card');
+  const content = card.querySelector('.result-card-content');
+  const toggle = card.querySelector('.result-card-toggle');
+
+  // Toggle collapsed state
+  content.classList.toggle('collapsed');
+  toggle.classList.toggle('collapsed');
+}
+
+window.toggleCardContent = toggleCardContent;
 
 init();
