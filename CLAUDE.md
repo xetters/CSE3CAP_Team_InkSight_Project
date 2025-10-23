@@ -128,6 +128,21 @@ Both analyses can run in parallel when both checkboxes are selected.
 - `sentimentData` - stores sentiment analysis data for download
 - Results are cleared on page refresh or manual clear action
 
+### HTML Download Functionality
+
+- HTML report generation in `frontend/download.js` (no external dependencies)
+- Two download options available:
+  - **Download All** - generates HTML report with complete analysis (`inksight-analysis.html`)
+  - **Section Downloads** - generates individual HTML files for word analysis or sentiment analysis
+- Implementation details:
+  - `generateHTML(title, wordData, sentData)` - Creates styled HTML template with inline CSS
+  - `downloadHTML(filename, html)` - Converts HTML to blob and triggers browser download
+  - `setLastResult(data)` / `setSentimentData(data)` - State setters called from index.js
+  - `initDownloads(downloadBtn)` - Initializes download button event listener
+  - `downloadSection(section)` - Called from results card buttons to download individual sections
+- Reports include styled formatting and can be opened in any browser or printed to PDF
+- Users can download results without any backend processing
+
 ## Future Development Notes
 
 ### Sentiment Analysis Integration
@@ -165,6 +180,7 @@ documentation/
 frontend/
   index.html          # Main UI structure
   index.js            # Client-side application logic
+  download.js         # PDF download functionality
   styles.css          # Complete styling
   modals/             # Modal dialog HTML fragments
 

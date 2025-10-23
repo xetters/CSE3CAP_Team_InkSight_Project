@@ -1,6 +1,3 @@
-let lastResult = null;
-let sentimentData = null;
-
 const $ = (id) => document.getElementById(id);
 
 async function loadModals() {
@@ -197,7 +194,7 @@ async function init() {
 
         if (!res.ok) throw new Error('Word analysis failed');
         wordData = await res.json();
-        lastResult = wordData;
+        setLastResult(wordData);
       }
 
       if (options.sentiment) {
@@ -208,7 +205,7 @@ async function init() {
 
         if (sentRes.ok) {
           sentData = await sentRes.json();
-          sentimentData = sentData;
+          setSentimentData(sentData);
         }
       }
 
@@ -270,6 +267,7 @@ async function init() {
         <div class="result-card-header" onclick="toggleCardContent(event)">
           <h3>Keyness Statistics (Coming Soon)</h3>
           <div class="card-actions">
+            <button class="section-download" onclick="event.stopPropagation(); downloadSection('keyness-stats')" style="opacity: 0.5; cursor: not-allowed;" disabled>Download</button>
             <div class="result-card-toggle">▼</div>
           </div>
         </div>
@@ -389,19 +387,8 @@ async function init() {
     return html;
   }
 
-  // Download
-  downloadBtn.addEventListener('click', () => {
-    alert('Download all functionality: This would generate a complete PDF report with all analysis results.');
-    console.log('Word data:', lastResult);
-    console.log('Sentiment data:', sentimentData);
-  });
-
-  function downloadSection(section) {
-    alert(`Download ${section}: This would generate a PDF with just the ${section} results.`);
-    console.log(`Downloading section: ${section}`);
-  }
-
-  window.downloadSection = downloadSection;
+  // Initialize download functionality
+  initDownloads(downloadBtn);
 
   function closeClearModal() {
     closeModal('clearModal');
@@ -419,8 +406,8 @@ async function init() {
     document.querySelector('.file-types').style.display = 'block';
     analyzeBtn.disabled = true;
 
-    lastResult = null;
-    sentimentData = null;
+    setLastResult(null);
+    setSentimentData(null);
 
     // Re-enable both input methods
     textArea.disabled = false;

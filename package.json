@@ -5,7 +5,7 @@
   "scripts": {
     "start-api": "node api/app.js",
     "open-browser": "node -e \"const { exec } = require('child_process'); const url = 'http://localhost:3000'; const cmd = process.platform === 'win32' ? `start ${url}` : process.platform === 'darwin' ? `open ${url}` : `xdg-open ${url}`; exec(cmd);\""
-},
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
