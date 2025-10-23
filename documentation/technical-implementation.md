@@ -102,59 +102,10 @@ analyze_sentiment(text)
 ### Node.js Packages
 - `express` - Web framework
 - `multer` - Multipart form handling
-- `mammoth` - DOCX text extraction
+- `mammoth` - DOCX text extraction>>>> ???? 
 
 ### Python Packages
 - `nltk` - Tokenization and text processing
 - `fasttext` - Word embeddings and sentiment classification
-- `numpy` - Numerical operations for scoring
 
-### NLTK Data Requirements
-- `punkt` - Sentence tokenizer
-- `stopwords` - Stop word corpus (optional filtering)
 
-## Privacy & Security Architecture
-
-**In-Memory Processing:**
-- Zero disk writes throughout entire pipeline
-- Isolated subprocess memory spaces
-- Immediate buffer cleanup post-analysis
-
-**Local Processing:**
-- All NLP models loaded locally on server
-- Zero external API dependencies
-- Complete offline operation capability
-
-**Zero Persistence:**
-- No database storage
-- No file system logging
-- No content in server logs
-
-## Performance Characteristics
-
-**Processing Times (typical documents):**
-- Word Analysis: 100-200ms
-- Keyness Statistics: 200-500ms
-- Sentiment Analysis: 300-800ms
-
-**Model Footprint:**
-- FastText sentiment model: 50-100MB
-- NLTK data packages: 10-20MB
-- Combined memory usage: <150MB
-
-## Scalability Considerations
-
-**Parallel Processing:** Multiple analyses execute concurrently when both checkboxes selected
-
-**Subprocess Isolation:** Each request spawns independent Python processes preventing interference
-
-**Memory Management:** Automatic garbage collection ensures stable memory usage under load
-
-## Extension Points
-
-**Planned Enhancements:**
-- Multi-corpus keyness comparison
-- Custom sentiment model training on literary texts
-- Style detection and readability scoring
-- Full ODT parsing library integration
-- Reference corpus caching for improved keyness performance

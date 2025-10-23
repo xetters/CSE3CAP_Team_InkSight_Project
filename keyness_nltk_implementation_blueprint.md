@@ -1,72 +1,108 @@
-# Keyness Implementation with NLTK
+# Keyness Statistics - Data Requirements
 
-## UI Integration
+## Frontend Call #1: Get Available Corpora (Optional - if dynamic)
 
-When user selects "Keyness Statistics" analysis, display a dropdown menu to select reference corpus:
+### API Endpoint: `GET /api/corpora`
 
-| Corpus Name | Description | Use Case |
-|-------------|-------------|----------|
-| `gutenberg` | Classic literature (e.g., Moby-Dick, Emma) | Word frequency, literary analysis |
-| `brown` | Balanced corpus of American English | Genre comparison |
-| `reuters` | Newswire articles | Text classification |
-| `inaugural` | U.S. presidential inaugural speeches | Diachronic (historical) language change |
-| `stopwords` | Lists of common words in multiple languages | Preprocessing |
-| `wordnet` | Lexical database of English | Synonyms, word meanings, semantic relations |
+**Frontend sends:**
+- Nothing (simple GET request)
 
-The selected corpus name should be passed to the backend API along with the user's text.
+**Backend must return:**
+Dictionary containing available corpora with their metadata:
+- Array of corpus objects, each containing:
+  - name: corpus identifier string
+  - display_name: human-readable name
+  - description: what the corpus contains
 
-## Processing Steps
+**Frontend processing:**
+- Populates corpus dropdown selector with available options
+- Uses display_name for dropdown text
+- Sends selected corpus name with analysis request
 
-1. **Receive input from stdin** - Read JSON containing user's uploaded text and selected corpus name.
+---
 
-2. **Load reference corpus** - Use NLTK to load the selected corpus (e.g., `nltk.corpus.brown.words()`). If corpus loading fails, fall back to frequency-only mode.
+## Frontend Call #2: Analyze Keyness
 
-3. **Tokenize** - Create function to split both user text and reference corpus into individual words, lowercase everything, keep only alphabetic characters.
+### API Endpoint: `POST /api/keyness-stats`
 
-4. **Count frequencies** - Create function to count how many times each word appears in both the user text and reference corpus.
+**Frontend sends:**
+- file: User's text file (TXT, DOCX, MD, ODT)
+- corpus: Selected corpus name string
 
-5. **Decide mode** - Check if reference corpus loaded successfully - if no, do frequency analysis; if yes, do log-likelihood keyness analysis.
+**Backend must return:**
+Dictionary containing:
+- total_words: integer, total word count in user's text
+- unique_words: integer, count of distinct words
+- significant_keywords: integer, count of keywords meeting p < 0.05
+- corpus: object containing
+  - name: corpus identifier string
+  - display_name: human-readable name string
+  - description: what the corpus contains string
+  - total_words: integer, size of reference corpus
+- keywords: array of objects, each containing
+  - word: the keyword string (lowercase)
+  - effect_size: float (can be positive or negative)
+  - ll_score: float (log-likelihood statistic)
+  - significance: string ("***", "**", or "*")
+  - user_freq: integer (raw count in user's text)
+  - corpus_freq: float (expected frequency, normalized to user text scale)
 
-6. **Calculate scores** - Frequency mode: divide word count by total. Comparative mode: create function that runs log-likelihood formula comparing frequencies in user text vs. reference corpus.
+**Frontend processing:**
+1. Updates stats display with total_words, unique_words, significant_keywords
+2. Shows corpus context using corpus display_name and description
+3. Renders chart with keywords array (sorted: negative effect_size first, then positive)
+4. Displays top 3 positive and top 3 negative effect_size words
+5. Counts and displays significance level breakdown (count of ***, **, *)
+6. Uses corpus name to look up comparison text from CORPUS_INFO configuration for insight generation
 
-7. **Filter** - Remove words below minimum length, words appearing too rarely, and scores below significance threshold.
+---
 
-8. **Sort results** - Frequency mode: sort by count descending. Comparative mode: sort by absolute log-likelihood score descending (showing over-represented words in user's text).
+## Required Python Functions
 
-9. **Format as JSON** - Build dictionary with total_words, unique_words, selected_corpus, and list of top keywords with their scores.
+### analyze_keyness()
+Takes user text string and corpus name string. Returns complete response dictionary.
 
-## NLTK Usage
+### calculate_log_likelihood()
+Takes 4 integers:
+- word count in user text
+- word count in reference corpus
+- total words in user text
+- total words in reference corpus
 
-- NLTK tokenizes the text using `word_tokenize()` to split it into words properly.
-- NLTK provides stopwords using `stopwords.words('english')` to optionally filter common words.
-- NLTK can count frequencies with `FreqDist()` though Python's `Counter()` works too.
-- NLTK provides built-in corpora via `nltk.corpus` module (e.g., `nltk.corpus.brown`, `nltk.corpus.gutenberg`).
+Returns log-likelihood G² score as float.
 
-## Log-Likelihood Formula
+### calculate_effect_size()
+Takes 4 integers:
+- user word count
+- user total words
+- corpus word count
+- corpus total words
 
-For keyness analysis, use the log-likelihood (LL) statistic to identify words that are over-represented in the user's text compared to the reference corpus:
+Returns standardized effect size (Cohen's h) as float.
 
-```
-LL = 2 * ((a * log(a/E1)) + (b * log(b/E2)))
+### get_significance_marker()
+Takes log-likelihood score as float. Returns significance string ("***", "**", "*", or empty).
 
-Where:
-- a = frequency of word in user's text
-- b = frequency of word in reference corpus
-- E1 = expected frequency in user's text = (a + b) * (c / N)
-- E2 = expected frequency in reference corpus = (a + b) * (d / N)
-- c = total words in user's text
-- d = total words in reference corpus
-- N = c + d (total words in both corpora)
-```
+### normalize_corpus_frequency()
+Takes 3 integers:
+- corpus word count
+- corpus total words
+- user total words
 
-**Significance threshold**: LL > 3.84 (p < 0.05) or LL > 6.63 (p < 0.01)
+Returns normalized frequency as float.
 
-Positive LL scores indicate over-representation in user's text (distinctive keywords).
+---
 
-## Alignment with PDF Requirements
+## Backend Configuration
 
-This implementation addresses the ***must-have*** requirement from the project proposal:
+### Corpus Metadata
+Backend maintains mapping of corpus names to metadata containing:
+- display_name string
+- description string
+- function to retrieve corpus words from NLTK
 
-> "Keyness statistics, which indicate the words that most distinctive in a text or set of texts"
-
-By comparing user's creative writing against NLTK reference corpora, the tool identifies distinctive keywords that reveal the writer's unique style, themes, and language patterns - fulfilling the goal of "*Tell me something I don't know*".
+### Significance Thresholds
+- LL ≥ 10.83 → "***" (p < 0.001)
+- LL ≥ 6.63 → "**" (p < 0.01)
+- LL ≥ 3.84 → "*" (p < 0.05)
+- LL < 3.84 → not significant (exclude from results)
