@@ -4,7 +4,7 @@
 
 import nltk
 
-packages = ['punkt', 'brown', 'gutenberg', 'reuters', 'inaugural']
+packages = ['punkt_tab', 'brown', 'gutenberg', 'reuters', 'inaugural']
 
 print("Downloading NLTK data packages for InkSight keyness analysis...\n")
 

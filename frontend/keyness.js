@@ -60,7 +60,7 @@ function renderKeynessStats(data) {
 
   const keywordsList = data.keywords
     .slice(0, 20)
-    .map(k => `<li><strong>${k.word}</strong> - Freq: ${k.user_freq}, Effect: ${k.effect_size}, LL: ${k.ll_score}, Sig: ${k.significance}</li>`)
+    .map(k => `<li><strong>${k.word}</strong> - Your Freq: ${k.user_freq}, Corpus Freq: ${k.corpus_freq}, Effect: ${k.effect_size}, LL: ${k.ll_score}, Sig: ${k.significance}</li>`)
     .join('');
 
   return `

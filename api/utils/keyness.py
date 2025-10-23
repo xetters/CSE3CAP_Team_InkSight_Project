@@ -4,7 +4,6 @@ import sys
 import math
 from nltk import word_tokenize, FreqDist
 from nltk.corpus import brown, gutenberg, reuters, inaugural
-from nltk.metrics.association import ContingencyMeasures
 
 # Corpus metadata: (display_name, description, loader_function)
 CORPORA = {
@@ -14,20 +13,19 @@ CORPORA = {
     'inaugural': ('Inaugural Addresses Corpus', 'U.S. Presidential inaugural addresses', inaugural.words)
 }
 
-measures = ContingencyMeasures()
-
 def tokenize(text):
     """Tokenize: lowercase, alphabetic only, min 3 chars"""
     return [w.lower() for w in word_tokenize(text) if w.isalpha() and len(w) >= 3]
 
 def log_likelihood(a, b, c, d):
-    """Calculate log-likelihood G² using NLTK's ContingencyMeasures"""
+    """Calculate log-likelihood G² score"""
     if a == 0 or b == 0:
         return 0.0
-    try:
-        return 2 * measures._contingency(a, c - a, b, d - b)
-    except (ValueError, ZeroDivisionError):
+    E1 = c * (a + b) / (c + d)
+    E2 = d * (a + b) / (c + d)
+    if E1 == 0 or E2 == 0:
         return 0.0
+    return 2 * ((a * math.log(a / E1)) + (b * math.log(b / E2)))
 
 def effect_size(a, b, c, d):
     """Calculate Cohen's h effect size"""

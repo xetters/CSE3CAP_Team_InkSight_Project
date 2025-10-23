@@ -17,10 +17,17 @@ exports.analyzeKeyness = (text, corpus) => {
   return new Promise((resolve, reject) => {
     const py = spawn('python', [path.join(__dirname, '..', 'utils', 'keyness.py')]);
     let out = '';
+    let err = '';
     py.stdout.on('data', d => out += d);
+    py.stderr.on('data', d => err += d);
     py.on('close', () => {
+      if (err) {
+        console.error('Python stderr:', err);
+        reject(new Error(`Python error: ${err}`));
+        return;
+      }
       try { resolve(JSON.parse(out)); }
-      catch (e) { reject(new Error('Bad JSON')); }
+      catch (e) { reject(new Error(`Bad JSON: ${out}`)); }
     });
     py.stdin.write(JSON.stringify({ text, corpus }));
     py.stdin.end();
