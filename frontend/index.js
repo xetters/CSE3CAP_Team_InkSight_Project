@@ -129,6 +129,9 @@ async function init() {
     chevron.classList.toggle('rotated');
   });
 
+  // Initialize keyness statistics UI
+  initKeynessStats();
+
   // File handling
   fileInput.addEventListener('change', () => {
     const f = fileInput.files[0];
@@ -199,7 +202,16 @@ async function init() {
     uploadArea.style.pointerEvents = hasText ? 'none' : 'auto';
     uploadArea.style.opacity = hasText ? '0.5' : '1';
 
-    analyzeBtn.disabled = !(hasFile || hasText);
+    // Check if any analysis option is selected
+    const keywordAnalysisSelected = $('keynessCheck').checked;
+    const sentimentSelected = $('sentimentCheck').checked;
+    const keynessStatsSelected = $('keynessStatsCheck').checked;
+    const hasAnalysisOption = keywordAnalysisSelected || sentimentSelected || keynessStatsSelected;
+
+    // If keyness stats is selected, corpus must be selected
+    const keynessCorpusValid = !keynessStatsSelected || $('corpusSelect').value.trim() !== '';
+
+    analyzeBtn.disabled = !(hasFile || hasText) || !hasAnalysisOption || !keynessCorpusValid;
   }
 
   textArea.addEventListener('input', checkInput);
@@ -235,7 +247,8 @@ async function init() {
 
     const options = {
       keyness: $('keynessCheck').checked,
-      sentiment: $('sentimentCheck').checked
+      sentiment: $('sentimentCheck').checked,
+      keynessStats: keynessStatsCheck.checked
     };
 
     analyzeBtn.disabled = true;
@@ -246,6 +259,7 @@ async function init() {
     try {
       let wordData = null;
       let sentData = null;
+      let keynessData = null;
 
       if (options.keyness) {
         const res = await fetch('/api/analyze-file', {
@@ -270,7 +284,16 @@ async function init() {
         }
       }
 
-      displayResults(wordData, sentData, options);
+      if (options.keynessStats) {
+        try {
+          keynessData = await analyzeKeyness(createFormData(), $('corpusSelect').value);
+          setKeynessData(keynessData);
+        } catch (err) {
+          console.error('Keyness analysis error:', err);
+        }
+      }
+
+      displayResults(wordData, sentData, keynessData, options);
 
       // Show collapse button after successful analysis
       uploadCollapseBtn.style.display = 'inline-block';
@@ -285,7 +308,7 @@ async function init() {
   });
 
   // Display results
-  function displayResults(wordData, sentData, options) {
+  function displayResults(wordData, sentData, keynessData, options) {
     downloadBtn.style.display = 'inline-block';
     clearBtn.style.display = 'inline-block';
 
@@ -325,27 +348,22 @@ async function init() {
       `;
     }
 
-    // Add placeholder keyness statistics section
-    html += `
-      <div class="result-card">
-        <div class="result-card-header" onclick="toggleCardContent(event)">
-          <h3>Keyness Statistics (Coming Soon)</h3>
-          <div class="card-actions">
-            <button class="section-download" onclick="event.stopPropagation(); downloadSection('keyness-stats')" style="opacity: 0.5; cursor: not-allowed;" disabled>Download</button>
-            <div class="result-card-toggle">▼</div>
-          </div>
-        </div>
-        <div class="result-card-content">
-          <div class="analysis-content">
-            <div style="text-align: center; padding: 2rem; color: var(--muted);">
-              <p><strong>Keyness Statistics</strong></p>
-              <p>This feature will analyze distinctive keywords and their statistical significance in your text.</p>
-              <p style="font-size: 0.9rem; margin-top: 1rem;">Loading from endpoint: <code>/api/keyness-stats</code></p>
+    if (options.keynessStats && keynessData) {
+      html += `
+        <div class="result-card">
+          <div class="result-card-header" onclick="toggleCardContent(event)">
+            <h3>Keyness Statistics</h3>
+            <div class="card-actions">
+              <button class="section-download" onclick="event.stopPropagation(); downloadSection('keyness-stats')">Download</button>
+              <div class="result-card-toggle">▼</div>
             </div>
           </div>
+          <div class="result-card-content">
+            ${renderKeynessStats(keynessData)}
+          </div>
         </div>
-      </div>
-    `;
+      `;
+    }
 
     if (!html) {
       html = '<div class="empty-state"><p>No results to display. Please select at least one analysis option.</p></div>';
@@ -516,6 +534,13 @@ async function init() {
   clearBtn.addEventListener('click', () => {
     openModal('clearModal');
   });
+
+  // Add event listeners to analysis checkboxes for validation
+  $('keynessCheck').addEventListener('change', checkInput);
+  $('sentimentCheck').addEventListener('change', checkInput);
+
+  // Export checkInput for use in keyness.js
+  window.checkInput = checkInput;
 }
 
 // Utility functions

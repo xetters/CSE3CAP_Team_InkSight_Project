@@ -63,7 +63,7 @@
                 <div class="options-list">
                   <div class="option">
                     <label>
-                      <input type="checkbox" checked id="keynessCheck">
+                      <input type="checkbox" id="keynessCheck">
                       <span>
                         <strong>Word Analysis</strong><br>
                         <small>Identify distinctive words and patterns</small>
@@ -73,12 +73,28 @@
 
                   <div class="option">
                     <label>
-                      <input type="checkbox" checked id="sentimentCheck">
+                      <input type="checkbox" id="sentimentCheck">
                       <span>
                         <strong>Sentiment Analysis</strong><br>
                         <small>Explore emotional tones</small>
                       </span>
                     </label>
+                  </div>
+
+                  <div class="option">
+                    <label>
+                      <input type="checkbox" id="keynessStatsCheck">
+                      <span>
+                        <strong>Keyness Statistics</strong><br>
+                        <small>Compare your text to reference corpora</small>
+                      </span>
+                    </label>
+                    <div id="corpusSelector" style="display: none; margin-top: 0.5rem; margin-left: 1.5rem;">
+                      <label for="corpusSelect" style="font-size: 0.9rem; color: var(--muted);">Reference Corpus:</label>
+                      <select id="corpusSelect" style="margin-top: 0.25rem; width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text);">
+                        <option value="">Select a corpus...</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -121,6 +137,7 @@
     <div id="modals-container"></div>
 
     <script src="download.js" defer></script>
+    <script src="keyness.js" defer></script>
     <script src="index.js" defer></script>
   </body>
 </html>

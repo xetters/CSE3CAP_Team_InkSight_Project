@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "inksight-project": "file:.."
+  }
+}
