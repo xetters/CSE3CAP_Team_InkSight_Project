@@ -592,6 +592,72 @@ th {
   color: var(--primary);
 }
 
+/* Formulas section */
+.formulas-section-toggle {
+  cursor: pointer;
+  user-select: none;
+  padding: 0.75rem 0;
+  margin: 1.5rem 0 0 0;
+  transition: all 0.2s;
+}
+
+.formulas-section-toggle:hover {
+  opacity: 0.8;
+}
+
+.formulas-toggle-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.formulas-toggle-header h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--primary);
+}
+
+.formulas-toggle-icon {
+  font-size: 0.9rem;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+  color: var(--primary);
+}
+
+.formulas-toggle-icon.rotated {
+  transform: rotate(90deg);
+}
+
+.formulas-section {
+  background: var(--light-gray);
+  border-left: 4px solid var(--primary);
+  padding: 1.5rem;
+  border-radius: 6px;
+  margin: 0 0 1.5rem 0;
+  max-height: 500px;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.formulas-section.collapsed {
+  max-height: 0;
+  padding: 0 1.5rem;
+  overflow: hidden;
+}
+
+.formula-item {
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+  color: var(--text);
+  padding: 0.5rem;
+}
+
+.formula-item strong {
+  color: var(--primary);
+  font-weight: 600;
+}
+
 /* Sentiment bars */
 .sentiment-bar-container {
   display: flex;

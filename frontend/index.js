@@ -359,23 +359,44 @@ async function init() {
       .map(w => `<tr><td>${escapeHtml(w.w)}</td><td>${w.n}</td></tr>`)
       .join('');
 
+    const readingTimeValue = data.reading_time?.value ?? 0;
+    const readingTimeUnit = data.reading_time?.unit ?? 'minutes';
+
     return `
       <div class="analysis-content">
         <p><strong>Word count:</strong> ${data.word_count ?? 0}</p>
-        <p><strong>Insight:</strong> ${escapeHtml(data.insight) ?? ''}</p>
 
         <div class="stats-grid">
           <div class="stat-item">
-            <div class="stat-label">Unique Words</div>
-            <div class="stat-value">${Math.round((data.top?.length ?? 0) * 1.5)}</div>
+            <div class="stat-label">Sentence Count</div>
+            <div class="stat-value">${data.sentence_count ?? 0}</div>
           </div>
           <div class="stat-item">
-            <div class="stat-label">Avg Word Length</div>
-            <div class="stat-value">5.2</div>
+            <div class="stat-label">Avg Sentence Length</div>
+            <div class="stat-value">${data.avg_sentence_length ?? 0}</div>
           </div>
           <div class="stat-item">
-            <div class="stat-label">Repetition Score</div>
-            <div class="stat-value">62%</div>
+            <div class="stat-label">Estimated Reading Time</div>
+            <div class="stat-value">${readingTimeValue} ${readingTimeUnit}</div>
+          </div>
+        </div>
+
+        <div class="formulas-section-toggle" onclick="toggleFormulas(event)">
+          <div class="formulas-toggle-header">
+            <h4>How These Metrics Work?</h4>
+            <span class="formulas-toggle-icon">▶</span>
+          </div>
+        </div>
+
+        <div class="formulas-section collapsed">
+          <div class="formula-item">
+            <strong>Sentence Count:</strong> Total number of sentences (split by . ! ?)
+          </div>
+          <div class="formula-item">
+            <strong>Average Sentence Length:</strong> Total Words ÷ Sentence Count
+          </div>
+          <div class="formula-item">
+            <strong>Estimated Reading Time:</strong> Total Words ÷ 200 (average reading speed: 200 words/minute)
           </div>
         </div>
 
@@ -515,6 +536,17 @@ function toggleCardContent(event) {
   toggle.classList.toggle('collapsed');
 }
 
+function toggleFormulas(event) {
+  const toggle = event.currentTarget;
+  const formulasSection = toggle.nextElementSibling;
+  const icon = toggle.querySelector('.formulas-toggle-icon');
+
+  // Toggle collapsed state
+  formulasSection.classList.toggle('collapsed');
+  icon.classList.toggle('rotated');
+}
+
 window.toggleCardContent = toggleCardContent;
+window.toggleFormulas = toggleFormulas;
 
 init();

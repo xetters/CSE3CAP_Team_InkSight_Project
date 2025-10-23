@@ -16,29 +16,41 @@ def get_top_words(counter: Counter, n: int = 5) -> list[dict]:
     """Return the top n words with their counts as a list of dictionaries."""
     return [{"w": word, "n": count} for word, count in counter.most_common(n)]
 
-def get_insight(total_words: int) -> str:
-    """Return a short description based on the total word count."""
-    if total_words == 0:
-        return "empty"
-    elif total_words < 50:
-        return "short"
-    elif total_words < 200:
-        return "medium"
+def count_sentences(text: str) -> int:
+    """Count the number of sentences in the text."""
+    # Split on common sentence endings
+    sentences = re.split(r'[.!?]+', text)
+    # Filter out empty sentences
+    return sum(1 for s in sentences if s.strip())
+
+def calculate_reading_time(total_words: int) -> dict:
+    """Calculate estimated reading time based on average reading speed of 200 words/minute."""
+    avg_speed = 200  # words per minute
+    minutes = total_words / avg_speed
+
+    if minutes < 1:
+        seconds = int(minutes * 60)
+        return {"value": seconds, "unit": "seconds"}
     else:
-        return "long"
+        return {"value": round(minutes, 1), "unit": "minutes"}
 
 def analyze_text(text: str) -> dict:
-    """Analyze the text and return a summary with word count, top words, and insight."""
+    """Analyze the text and return a summary with word count, top words, sentences, and reading time."""
     tokens = tokenize(text)
     counter = count_words(tokens)
     total = sum(counter.values())
     top_words = get_top_words(counter)
-    insight = get_insight(total)
+
+    sentence_count = count_sentences(text)
+    avg_sentence_length = round(total / sentence_count, 1) if sentence_count > 0 else 0
+    reading_time = calculate_reading_time(total)
 
     return {
         "word_count": total,
         "top": top_words,
-        "insight": insight
+        "sentence_count": sentence_count,
+        "avg_sentence_length": avg_sentence_length,
+        "reading_time": reading_time
     }
 
 # --- directly read from stdin when called from Node ---
