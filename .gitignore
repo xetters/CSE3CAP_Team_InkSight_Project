@@ -1,6 +1,0 @@
-# Ignore the node modules folder
-api/node_modules/
-.claude
-Claude.md
-.vscode/
-.gitignore
