@@ -105,6 +105,10 @@ async function init() {
   const downloadBtn = $('downloadBtn');
   const clearBtn = $('clearBtn');
   const uploadArea = $('uploadArea');
+  const uploadCollapseBtn = $('uploadCollapseBtn');
+  const uploadContent = $('uploadContent');
+  const uploadSection = document.querySelector('.upload-section');
+  const contentGrid = document.querySelector('.content-grid');
 
   // Navigation
   const navModals = { howItWorksLink: 'howItWorksModal', implementationLink: 'implementationModal', teamLink: 'teamModal' };
@@ -200,6 +204,15 @@ async function init() {
 
   textArea.addEventListener('input', checkInput);
 
+  // Upload section collapse functionality
+  uploadCollapseBtn.addEventListener('click', () => {
+    const isCollapsed = uploadContent.classList.contains('collapsed');
+    uploadContent.classList.toggle('collapsed');
+    uploadSection.classList.toggle('collapsed');
+    contentGrid.classList.toggle('stacked');
+    uploadCollapseBtn.textContent = isCollapsed ? 'Collapse' : 'Expand';
+  });
+
   // Helper to create FormData
   function createFormData() {
     const formData = new FormData();
@@ -258,6 +271,9 @@ async function init() {
       }
 
       displayResults(wordData, sentData, options);
+
+      // Show collapse button after successful analysis
+      uploadCollapseBtn.style.display = 'inline-block';
 
     } catch (err) {
       resultsDiv.innerHTML = `<div class="error-message">Error: ${err.message}</div>`;
@@ -461,6 +477,13 @@ async function init() {
     textArea.disabled = false;
     uploadArea.style.pointerEvents = 'auto';
     uploadArea.style.opacity = '1';
+
+    // Restore upload section: hide collapse button and expand content
+    uploadCollapseBtn.style.display = 'none';
+    uploadContent.classList.remove('collapsed');
+    uploadSection.classList.remove('collapsed');
+    contentGrid.classList.remove('stacked');
+    uploadCollapseBtn.textContent = 'Collapse';
 
     closeModal('clearModal');
   }

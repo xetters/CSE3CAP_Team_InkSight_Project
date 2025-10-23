@@ -28,9 +28,13 @@
 
         <div class="content-grid">
           <div class="upload-section">
-            <h2>Upload Your Writing</h2>
+            <div class="upload-section-header">
+              <h2>Upload Your Writing</h2>
+              <button class="upload-collapse-btn" id="uploadCollapseBtn">Collapse</button>
+            </div>
 
-            <div class="file-upload-row" id="uploadArea">
+            <div class="upload-section-content" id="uploadContent">
+              <div class="file-upload-row" id="uploadArea">
               <input id="file" type="file" accept=".txt,.docx,.md,.odt" autocomplete="off" />
               <span class="file-types">TXT, DOCX, MD, ODT</span>
             </div>
@@ -84,6 +88,7 @@
             <p class="info-text">
               ℹ️ Your text will be processed and deleted immediately after analysis
             </p>
+            </div>
           </div>
 
           <div class="results-section">

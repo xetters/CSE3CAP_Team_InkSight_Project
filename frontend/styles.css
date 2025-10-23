@@ -171,11 +171,148 @@ body {
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
   margin-bottom: 3rem;
+  transition: grid-template-columns 0.3s ease-out;
+}
+
+.content-grid.stacked {
+  grid-template-columns: 1fr;
 }
 
 @media (max-width: 900px) {
   .content-grid {
     grid-template-columns: 1fr;
+  }
+
+  .ink-container {
+    padding: 0 1.5rem;
+  }
+
+  .main-wrapper {
+    padding: 1.5rem 0;
+  }
+
+  .page-header {
+    margin-bottom: 2rem;
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .ink-container {
+    padding: 0 1rem;
+  }
+
+  .main-wrapper {
+    padding: 1rem 0;
+  }
+
+  .content-grid {
+    gap: 1.5rem;
+  }
+
+  .upload-section,
+  .results-section {
+    padding: 1.5rem;
+  }
+
+  .upload-section.collapsed {
+    padding: 0.75rem 1.5rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .tagline {
+    font-size: 1rem;
+  }
+
+  .privacy-badge {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .ink-container {
+    padding: 0 0.75rem;
+  }
+
+  .main-wrapper {
+    padding: 0.75rem 0;
+  }
+
+  .content-grid {
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .upload-section,
+  .results-section {
+    padding: 1rem;
+  }
+
+  .upload-section.collapsed {
+    padding: 0.5rem 1rem;
+  }
+
+  .page-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .tagline {
+    font-size: 0.95rem;
+  }
+
+  .upload-section h2,
+  .results-section h2 {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 450px) {
+  .ink-container {
+    padding: 0 0.5rem;
+  }
+
+  .content-grid {
+    gap: 0.75rem;
+  }
+
+  .upload-section,
+  .results-section {
+    padding: 0.75rem;
+  }
+
+  .upload-section.collapsed {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .upload-section h2,
+  .results-section h2 {
+    font-size: 1.1rem;
+  }
+
+  .results-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .results-actions {
+    width: 100%;
+    justify-content: flex-end;
   }
 }
 
@@ -185,11 +322,54 @@ body {
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 2rem;
+  transition: all 0.3s ease-out;
+}
+
+.upload-section.collapsed {
+  padding: 1rem 2rem;
 }
 
 .upload-section h2 {
   margin-bottom: 1.5rem;
   color: var(--text);
+}
+
+.upload-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.upload-section-header h2 {
+  margin-bottom: 0;
+}
+
+.upload-collapse-btn {
+  background: white;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 0.85rem;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: none;
+}
+
+.upload-collapse-btn:hover {
+  background: var(--light-gray);
+}
+
+.upload-section-content {
+  max-height: none;
+  overflow: visible;
+  transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.upload-section-content.collapsed {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
 }
 
 .file-upload-row {
@@ -582,9 +762,111 @@ th {
   margin: 1.5rem 0;
 }
 
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 600px) {
   .stats-grid {
     grid-template-columns: 1fr;
+  }
+
+  .analysis-content {
+    padding: 1rem;
+  }
+
+  .file-upload-row {
+    padding: 1.5rem;
+  }
+
+  textarea {
+    padding: 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  button {
+    padding: 0.65rem 1.25rem;
+    font-size: 0.95rem;
+  }
+
+  .download-btn,
+  .clear-btn,
+  .section-download {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.75rem;
+  }
+
+  .upload-collapse-btn {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.65rem;
+  }
+
+  .upload-section-header {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 450px) {
+  .analysis-content {
+    padding: 0.75rem;
+  }
+
+  .file-upload-row {
+    padding: 1rem;
+  }
+
+  textarea {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  button {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .download-btn,
+  .clear-btn,
+  .section-download {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.6rem;
+  }
+
+  .upload-collapse-btn {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.5rem;
+  }
+
+  .upload-section-header {
+    margin-bottom: 0.75rem;
+  }
+
+  .result-card-header {
+    padding: 1rem;
+  }
+
+  .result-card-header h3 {
+    font-size: 1rem;
+  }
+
+  table {
+    font-size: 0.85rem;
+  }
+
+  th,
+  td {
+    padding: 0.5rem;
+  }
+
+  .sentiment-bar-container {
+    height: 150px;
+    gap: 1rem;
+  }
+
+  .sentiment-bar-fill {
+    width: 30px;
   }
 }
 
