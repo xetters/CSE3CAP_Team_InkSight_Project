@@ -54,17 +54,12 @@ async function init() {
   const uploadArea = $('uploadArea');
 
   // Navigation
-  const navModals = { aboutLink: 'aboutModal', howItWorksLink: 'howItWorksModal', privacyLink: 'privacyModal' };
+  const navModals = { howItWorksLink: 'howItWorksModal', implementationLink: 'implementationModal', teamLink: 'teamModal' };
   Object.entries(navModals).forEach(([link, modal]) => {
     $(link).addEventListener('click', (e) => {
       e.preventDefault();
       openModal(modal);
     });
-  });
-
-  $('homeLink').addEventListener('click', (e) => {
-    e.preventDefault();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
   // Options toggle

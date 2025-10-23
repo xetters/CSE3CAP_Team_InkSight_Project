@@ -609,11 +609,11 @@ th {
 .modal-content {
   background-color: #fefefe;
   margin: 10% auto;
-  padding: 2rem;
+  padding: 3rem;
   border: 1px solid var(--border);
   border-radius: 8px;
   width: 90%;
-  max-width: 600px;
+  max-width: 700px;
   max-height: 80vh;
   overflow-y: auto;
 }
@@ -624,6 +624,7 @@ th {
   font-size: 1.5rem;
   cursor: pointer;
   transition: color 0.2s;
+  margin-top: -0.5rem;
 }
 
 .close:hover {
@@ -631,12 +632,49 @@ th {
 }
 
 .modal-content h2 {
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
+  color: var(--text);
+  font-size: 1.8rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--light-gray);
+}
+
+.modal-content p {
+  margin: 2rem 0 1rem 0;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.modal-content p strong {
+  color: var(--primary);
+  font-size: 1.05rem;
+}
+
+.modal-content ul {
+  margin: 1rem 0 0 0;
+  padding-left: 1.5rem;
+  list-style: none;
+}
+
+.modal-content li {
+  margin-bottom: 0.875rem;
+  line-height: 1.6;
+  color: var(--text);
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.modal-content li:before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--primary);
+  font-weight: bold;
 }
 
 .modal-content h3 {
-  margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
 }
 
 .modal-actions {
