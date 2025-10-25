@@ -55,14 +55,29 @@ def analyze_keyness(text, corpus_name):
     corpus_freq = FreqDist(corpus_tokens)
     corpus_total = len(corpus_tokens)
 
+    # Create set of words to analyze:
+    # - All words from user text (for over-represented keywords)
+    # - Top 500 most frequent corpus words (for under-represented keywords)
+    top_corpus_words = set(word for word, _ in corpus_freq.most_common(500))
+    all_words = set(user_freq.keys()) | top_corpus_words
+
     # Calculate keyness for each word
     keywords = []
-    for word, user_count in user_freq.items():
-        corpus_count = max(corpus_freq.get(word, 0), 1)
-        ll = log_likelihood(user_count, corpus_count, user_total, corpus_total)
+    for word in all_words:
+        user_count = user_freq.get(word, 0)
+        corpus_count = corpus_freq.get(word, 0)
+
+        # Skip if word doesn't appear in either (shouldn't happen but just in case)
+        if user_count == 0 and corpus_count == 0:
+            continue
+
+        # Calculate log-likelihood with smoothing for zero counts
+        a = user_count + 0.5
+        b = corpus_count + 0.5
+        ll = log_likelihood(a, b, user_total, corpus_total)
 
         if ll >= 3.84:  # Only significant keywords (p < 0.05)
-            es = effect_size(user_count, corpus_count, user_total, corpus_total)
+            es = effect_size(a, b, user_total, corpus_total)
             norm_freq = (corpus_count / corpus_total) * user_total
 
             keywords.append({
@@ -74,7 +89,8 @@ def analyze_keyness(text, corpus_name):
                 'corpus_freq': round(norm_freq, 2)
             })
 
-    keywords.sort(key=lambda x: abs(x['effect_size']), reverse=True)
+    # Sort by effect size (negative first for under-represented, then positive for over-represented)
+    keywords.sort(key=lambda x: x['effect_size'])
 
     return {
         'total_words': user_total,
