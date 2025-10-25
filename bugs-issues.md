@@ -14,3 +14,8 @@
 **Recommendation:** Keyness analysis is most reliable for texts of 1,000+ words. This is consistent with corpus linguistics best practices.
 
 **Status:** Working as intended. This is a known limitation of the statistical method, not a software bug.
+
+
+## More things to consider:
+
+Common word filter: "the" "and" "of" "a"?
