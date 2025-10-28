@@ -1,2 +1,4 @@
 node_modules/
+/fastText/
 cc.en.300.bin
+cc.en.100.bin

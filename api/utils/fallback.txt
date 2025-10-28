@@ -1,0 +1,1 @@
+Natural Language Processing Text analysis and data mining Semantic understanding and relationship extraction Sentiment analysis and opinion mining Word embedding for vector representation

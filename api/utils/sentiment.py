@@ -1,82 +1,109 @@
 # api/utils/sentiment.py
+import os
 import sys
 import json
 import re
-import random
+import fasttext
+import numpy as np
+from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
+
+script_dir = os.path.dirname(os.path.abspath(__file__)) + '/../../models/cc.en.100.bin'
+pj_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
+model_path = os.path.join(pj_root, 'models', 'cc.en.100.bin')
+fallback_path = os.path.join(script_dir,'fallback.txt')
 
 def tokenize(text: str) -> list[str]:
-    """Convert text to sentences."""
-    # Simple sentence splitting
-    sentences = re.split(r'[.!?]+', text)
-    return [s.strip() for s in sentences if s.strip()]
+    """Convert text to lowercase words."""
+    tokens = re.findall(r'\b[a-zA-Z]{3,}\b', text.lower())
+    return tokens
 
-def analyze_sentiment(text: str) -> dict:
-    """
-    Dummy sentiment analysis that assigns random sentiment scores.
-    In production, this would use FastText or another NLP model.
-    """
-    sentences = tokenize(text)
+def load_model(model_path=model_path):
+    """Load FastText model. Train fallback model if not found."""
+    if os.path.exists(model_path):
+        print(f"Loading FastText model from {model_path}", file=sys.stderr)
+        return fasttext.load_model(model_path)
+    else:
+        with open(fallback_path, "w", encoding="utf-8") as f: 
+            f.write("Natural Language Processing Text analysis and data mining Semantic understanding and relationship extraction Sentiment analysis and opinion mining Word embedding for vector representation")
+            
+        return fasttext.train_unsupervised(
+            fallback_path, 
+            model='skipgram', 
+            dim=50, # changed dimension parameter
+            epoch=5, # changed epoch parameter
+            minCount=1
+        )
+
+def get_word_vector(model, tokens):
+    """Get average word vector for given tokens."""
+    vectors = []
+    valid_tokens = []
+    for token in tokens:
+        try:
+            vec = model.get_word_vector(token)
+            vectors.append(vec)
+            valid_tokens.append(token)
+        except Exception:
+            continue
+    return np.array(vectors), valid_tokens
+
+def cluster_words(vectors, tokens, n_clusters=4):
+    """Cluster embedding into semantic groups"""
+    if len(vectors) < n_clusters:
+        n_clusters = max(1, len(vectors))
+    kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=5)
+    labels = kmeans.fit_predict(vectors)
     
-    if not sentences:
+    # Optional PCA for visualization compatibility
+    pca = PCA(n_components=2, random_state=42)
+    reduced = pca.fit_transform(vectors)
+
+    clusters = []
+    for i in range(n_clusters):
+        cluster_indices = np.where(labels == i)[0]
+        centroid = kmeans.cluster_centers_[i]
+        distances = np.linalg.norm(vectors[cluster_indices] - centroid, axis=1)
+        top_idx = cluster_indices[np.argsort(distances)[:10]]
+        top_words = [tokens[j] for j in top_idx]
+        clusters.append({
+            "id": i,
+            "keywords": top_words
+        })
+    return clusters
+
+"""Main function"""
+
+def analyze_semantic(text: str) -> dict:
+    """Analyze semantic clusters in the text."""
+    tokens = tokenize(text)
+    
+    if not tokens:
         return {
-            "overall_sentiment": "neutral",
-            "sentiment_score": 0.0,
-            "positive_ratio": 0.0,
-            "negative_ratio": 0.0,
-            "neutral_ratio": 0.0,
-            "sentence_count": 0,
-            "sentences": []
+            "overall_semantic": "no_clusters",
+            "cluster_count": 0,
+            "clusters": []
         }
     
-    # Dummy sentiment assignment (replace with FastText later)
-    sentiments = ['positive', 'negative', 'neutral']
-    sentence_data = []
+    model = load_model()
+    vectors, valid_tokens = get_word_vector(model, tokens)
+
+    if len(valid_tokens) == 0:
+        return {
+            "overall_semantic": "no_valid_tokens",
+            "cluster_count": 0,
+            "clusters": []
+        }
     
-    for sentence in sentences:
-        # Random sentiment for now
-        sentiment = random.choice(sentiments)
-        
-        # Assign score based on sentiment
-        if sentiment == 'positive':
-            score = random.uniform(0.5, 1.0)
-        elif sentiment == 'negative':
-            score = random.uniform(-1.0, -0.5)
-        else:
-            score = random.uniform(-0.3, 0.3)
-        
-        sentence_data.append({
-            "text": sentence[:100] + "..." if len(sentence) > 100 else sentence,
-            "sentiment": sentiment,
-            "score": round(score, 3)
-        })
-    
-    # Calculate overall statistics
-    positive_count = sum(1 for s in sentence_data if s['sentiment'] == 'positive')
-    negative_count = sum(1 for s in sentence_data if s['sentiment'] == 'negative')
-    neutral_count = sum(1 for s in sentence_data if s['sentiment'] == 'neutral')
-    
-    total = len(sentence_data)
-    avg_score = sum(s['score'] for s in sentence_data) / total
-    
-    # Determine overall sentiment
-    if avg_score > 0.2:
-        overall = "positive"
-    elif avg_score < -0.2:
-        overall = "negative"
-    else:
-        overall = "neutral"
-    
+    clusters = cluster_words(vectors, valid_tokens, n_clusters=4)
+
     return {
-        "overall_sentiment": overall,
-        "sentiment_score": round(avg_score, 3),
-        "positive_ratio": round(positive_count / total, 3),
-        "negative_ratio": round(negative_count / total, 3),
-        "neutral_ratio": round(neutral_count / total, 3),
-        "sentence_count": total,
-        "sentences": sentence_data[:20]  # Limit to first 20 sentences
+        "overall_semantic": "clusters_found",
+        "cluster_count": len(clusters),
+        "clusters": clusters
     }
 
 # Read from stdin when called from Node
 text = sys.stdin.read() or ""
-result = analyze_sentiment(text)
+result = analyze_semantic(text)
 print(json.dumps(result, ensure_ascii=False))
