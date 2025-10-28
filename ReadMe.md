@@ -93,7 +93,6 @@ python --version
 - Python analysis is performed via a spawned subprocess, so Python must be accessible in your system PATH
 - File uploads are handled in-memory using `multer`
 - Text extraction from DOCX files is handled by the `mammoth` library
-- **Sentiment analysis**: Currently uses random data for testing. To integrate FastText/NLP, replace the `analyze_sentiment()` function in `api/utils/sentiment.py`
 
 ---
 
