@@ -44,7 +44,7 @@ python --version
    cd ..
    ```
 
-## FastText pre-train model Installation** 
+## FastText pre-train model Installation 
    You can run these command or manually download at the link: https://fasttext.cc/docs/en/crawl-vectors.html
 
    **Download the model**
@@ -61,7 +61,7 @@ python --version
    python download_model.py en
    ```
    Move the model into the "models" folder
-   
+
    This is from the FastText documentation website, you can find other models or check for yourself at the mentioned link
    Model used is cc.en.300.bin (English language)
 
