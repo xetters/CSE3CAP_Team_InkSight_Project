@@ -58,6 +58,7 @@ python --version
    ./download_model.py en
    ```
    This is from the FastText documentation website, you can find other models or check for yourself at the mentioned link
+   Model used is cc.en.300.bin (English language)
 
    To install fasttext, run
    ```
