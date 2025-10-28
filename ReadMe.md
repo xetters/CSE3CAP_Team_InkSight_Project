@@ -10,7 +10,7 @@ Ensure the following software dependencies are installed on your system:
 
 - **Node.js**: v18 or higher
 - **npm**: v9 or higher  
-- **Python**: v3.9 or higher
+- **Python**: exactly v3.11.9 - this is to support FastTest model
 
 You can verify your installations by running:
 ```bash
@@ -42,6 +42,26 @@ python --version
    cd frontend
    npm install
    cd ..
+   ```
+
+5. **Install FastText pre-train model** in the `models` subfolder:
+   You can run these command or manually download at the link: https://fasttext.cc/docs/en/crawl-vectors.html
+   ```
+   git clone https://github.com/facebookresearch/fastText.git
+   cd fastText
+   sudo pip install .
+   # or :
+   sudo python setup.py install
+   ```
+   and then
+   ```
+   ./download_model.py en
+   ```
+   This is from the FastText documentation website, you can find other models or check for yourself at the mentioned link
+
+   To install fasttext, run
+   ```
+   pip install fasttext-wheel
    ```
 
 ---
