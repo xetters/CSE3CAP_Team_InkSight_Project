@@ -44,10 +44,11 @@ python --version
    cd ..
    ```
 
-5. **Install FastText pre-train model** in the `models` subfolder:
+## FastText pre-train model Installation** 
    You can run these command or manually download at the link: https://fasttext.cc/docs/en/crawl-vectors.html
 
-   Download the python package
+   **Download the model**
+   First download the python package
    ```
    git clone https://github.com/facebookresearch/fastText.git
    cd fastText
@@ -57,16 +58,18 @@ python --version
    ```
    and then
    ```
-   ./download_model.py en
+   python download_model.py en
    ```
+   Move the model into the "models" folder
+   
    This is from the FastText documentation website, you can find other models or check for yourself at the mentioned link
    Model used is cc.en.300.bin (English language)
 
-   Then run this command to install fasttext and necessary library for the semantic cluster analysis
+   **Semantic cluster analysis libraries**
    ```
    pip install fasttext-wheel scikit-learn numpy gensim
    ```
-   To adapt the model dimension
+   **Adapt the model dimension**
    ```
    cd fastText
    python reduce_model.py [Path to the model] cc.en.300.bin [desired dimension]
