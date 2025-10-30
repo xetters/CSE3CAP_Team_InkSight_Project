@@ -1,4 +1,4 @@
-# api/utils/sentiment.py
+# api/utils/semantic.py
 import os
 import sys
 import json
@@ -67,8 +67,8 @@ def cluster_words(vectors, tokens, n_clusters=4):
         top_idx = cluster_indices[np.argsort(distances)[:10]]
         top_words = [tokens[j] for j in top_idx]
         clusters.append({
-            "id": i,
-            "keywords": top_words
+            "label": f"Cluster {i}",
+            "words": top_words
         })
     return clusters
 
@@ -98,12 +98,22 @@ def analyze_semantic(text: str) -> dict:
     clusters = cluster_words(vectors, valid_tokens, n_clusters=4)
 
     return {
-        "overall_semantic": "clusters_found",
-        "cluster_count": len(clusters),
-        "clusters": clusters
+        "total_words": len(tokens),
+        "total_clusters": len(clusters),
+        "clusters": clusters,
+        "top_clusters": clusters[:4]  #return top 4 clusters
     }
 
 # Read from stdin when called from Node
 text = sys.stdin.read() or ""
 result = analyze_semantic(text)
-print(json.dumps(result, ensure_ascii=False))
+output = {
+    "overall_sentiment": "semantic_clusters",  #
+    "semantic_summary": {
+        "total_words": result.get("total_words", 0),
+        "total_clusters": result.get("total_clusters", 0),
+        "top_clusters": result.get("top_clusters", []),
+        "clusters": result.get("clusters", [])
+    }
+}
+print(json.dumps(output, ensure_ascii=False))
