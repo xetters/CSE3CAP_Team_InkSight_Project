@@ -71,10 +71,10 @@ async function handleSentiment(req, res) {
         return res.json({
         overall_sentiment: "semantic_clusters",
         semantic_summary: {
-          total_words: result.total_words,
-          total_clusters: result.total_clusters,
-          top_clusters: result.top_clusters,      
-          clusters: result.clusters
+          total_words: result.total_words, 
+          total_clusters: result.total_clusters, //number of clusters
+          top_clusters: result.top_clusters, //top 4 clusters     
+          clusters: result.clusters // all clusters (which can be avaliable for the download function)
         }
         });
     
