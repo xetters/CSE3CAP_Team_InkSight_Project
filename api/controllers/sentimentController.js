@@ -22,10 +22,11 @@ export async function analyzeSemantic(req, res) {
             if (errData) console.error('Python stderr:', errData);
 
             try {
-                const result = JSON.paarse(data.trim());
+                const result = JSON.parse(data.trim());
 
                 return res.json({
                 mode: "semantic_analysis",
+
                 semantic_summary: {
                     total_words: result.total_words, 
                     total_clusters: result.total_clusters,  //number of clusters

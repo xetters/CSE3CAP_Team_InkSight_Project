@@ -278,10 +278,10 @@ async function init() {
           body: createFormData()
         });
 
-        if (sentRes.ok) {
-          sentData = await sentRes.json();
-          setSentimentData(sentData);
-        }
+        if (!sentRes.ok) throw new Error('Semantic analysis failed');
+
+        sentData = await sentRes.json(); 
+        setSentimentData(sentData);       
       }
 
       if (options.keynessStats) {
@@ -352,7 +352,7 @@ async function init() {
       html += `
         <div class="result-card">
           <div class="result-card-header" onclick="toggleCardContent(event)">
-            <h3>Sentiment Analysis</h3>
+            <h3>Semantic Analysis</h3>
             <div class="card-actions">
               <button class="section-download" onclick="event.stopPropagation(); downloadSection('sentiment')">Download</button>
               <div class="result-card-toggle">▼</div>
