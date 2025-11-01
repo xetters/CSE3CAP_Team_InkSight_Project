@@ -2,7 +2,7 @@
 
 ## Overview
 
-InkSight is a privacy-focused text analysis tool that provides comprehensive writing insights through word frequency analysis, keyness statistics, and sentiment analysis. All processing occurs locally with zero external data transmission.
+InkSight is a privacy-focused text analysis tool that provides comprehensive writing insights through word frequency analysis, keyness statistics, and semantic clustering. All processing occurs locally with zero external data transmission.
 
 ## User Journey
 
@@ -15,8 +15,8 @@ InkSight is a privacy-focused text analysis tool that provides comprehensive wri
 User chooses from three powerful analysis types:
 
 - **Word Analysis** - Identifies most frequently used words with occurrence counts
-- **Keyness Statistics** - Highlights distinctive words compared to reference corpus using log-likelihood calculations
-- **Sentiment Analysis** - Classifies emotional tone with positive, negative, and neutral breakdowns
+- **Keyness Statistics** - Highlights distinctive words compared to reference corpus (Brown, Gutenberg, Reuters, or Inaugural) using chi-squared statistical tests
+- **Semantic Analysis** - Groups semantically related words into clusters using FastText embeddings
 
 ### 3. Processing
 - User clicks "Analyze My Writing" to initiate analysis
@@ -25,9 +25,9 @@ User chooses from three powerful analysis types:
 
 ### 4. Results Viewing
 - Results appear in clean, expandable cards
-- Interactive visualizations display insights
+- Interactive visualizations display insights (Chart.js for keyness statistics)
 - Detailed breakdowns available for each analysis type
-- Sentiment includes sentence-by-sentence analysis
+- Semantic analysis displays word clusters grouped by semantic similarity
 
 ### 5. Export Options
 - Download complete results as standalone HTML file
@@ -41,9 +41,9 @@ User chooses from three powerful analysis types:
 
 ## Technology Foundation
 
-**Frontend:** Vanilla JavaScript - no external dependencies
+**Frontend:** Vanilla JavaScript with Chart.js for visualizations
 **Backend:** Node.js with Express framework
-**NLP Processing:** NLTK for tokenization, FastText for sentiment analysis
+**NLP Processing:** NLTK for word/keyness analysis, FastText for semantic clustering
 **File Handling:** In-memory processing with Multer and Mammoth libraries
 
 ## Privacy Commitment

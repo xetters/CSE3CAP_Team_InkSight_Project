@@ -1,6 +1,6 @@
 # Keyness Statistics - Data Requirements
 
-## Frontend Call #1: Get Available Corpora (Optional - if dynamic)
+## Frontend Call #1: Get Available Corpora
 
 ### API Endpoint: `GET /api/corpora`
 
@@ -42,10 +42,7 @@ Dictionary containing:
 - keywords: array of objects, each containing
   - word: the keyword string (lowercase)
   - effect_size: float (can be positive or negative)
-  - ll_score: float (log-likelihood statistic)
   - significance: string ("***", "**", or "*")
-  - user_freq: integer (raw count in user's text)
-  - corpus_freq: float (expected frequency, normalized to user text scale)
 
 **Frontend processing:**
 1. Updates stats display with total_words, unique_words, significant_keywords
@@ -62,16 +59,17 @@ Dictionary containing:
 ### analyze_keyness()
 Takes user text string and corpus name string. Returns complete response dictionary.
 
-### calculate_log_likelihood()
-Takes 4 integers:
-- word count in user text
-- word count in reference corpus
+### test_frequency()
+Takes 5 parameters:
+- word string
+- user word frequency
+- corpus word frequency
 - total words in user text
 - total words in reference corpus
 
-Returns log-likelihood G² score as float.
+Returns p-value from chi-squared test using scipy's chi2_contingency.
 
-### calculate_effect_size()
+### freq_strength()
 Takes 4 integers:
 - user word count
 - user total words
@@ -80,16 +78,8 @@ Takes 4 integers:
 
 Returns standardized effect size (Cohen's h) as float.
 
-### get_significance_marker()
-Takes log-likelihood score as float. Returns significance string ("***", "**", "*", or empty).
-
-### normalize_corpus_frequency()
-Takes 3 integers:
-- corpus word count
-- corpus total words
-- user total words
-
-Returns normalized frequency as float.
+### give_star_value()
+Takes p-value as float. Returns significance string ("***", "**", "*", or empty).
 
 ---
 
@@ -101,8 +91,8 @@ Backend maintains mapping of corpus names to metadata containing:
 - description string
 - function to retrieve corpus words from NLTK
 
-### Significance Thresholds
-- LL ≥ 10.83 → "***" (p < 0.001)
-- LL ≥ 6.63 → "**" (p < 0.01)
-- LL ≥ 3.84 → "*" (p < 0.05)
-- LL < 3.84 → not significant (exclude from results)
+### Significance Thresholds (p-values)
+- p < 0.001 → "***"
+- p < 0.01 → "**"
+- p < 0.05 → "*"
+- p ≥ 0.05 → not significant (exclude from results)

@@ -22,30 +22,43 @@
 8. All data cleared from memory immediately
 
 ### Keyness Statistics
-**Endpoint:** `POST /api/analyze-file` (with comparative mode)
+**Endpoint:** `POST /api/keyness-stats`
 
-1. Same upload process as Word Analysis
-2. Python compares user text against reference corpus
-3. **Log-likelihood calculation** identifies distinctive words:
-   - Measures statistical significance of word usage
+1. Browser sends file with selected corpus parameter (brown/gutenberg/reuters/inaugural)
+2. Express extracts text and spawns Python subprocess with corpus argument
+3. Python compares user text against reference corpus
+4. **Chi-squared statistical test** identifies distinctive words:
+   - Measures statistical significance of word usage using scipy's chi2_contingency
+   - Calculates effect size using Cohen's h
    - Filters by minimum thresholds and significance scores
    - Ranks results by distinctiveness
-4. Returns ranked keywords showing writing uniqueness
-5. Frontend displays top distinctive words with significance indicators
+5. Returns ranked keywords showing writing uniqueness with effect size and significance markers
+6. Frontend (keyness.js) displays top distinctive words with Chart.js horizontal bar visualization
 
-### Sentiment Analysis
+### Semantic Analysis
 **Endpoint:** `POST /api/sentiment`
 
-1. Browser sends file to dedicated sentiment endpoint
+1. Browser sends file to semantic analysis endpoint
 2. Node.js extracts text and spawns Python subprocess
-3. **FastText sentiment processing**:
-   - Splits text into sentences
-   - Generates word embeddings for semantic understanding
-   - Applies pre-trained sentiment classification model
-   - Assigns positive, negative, or neutral labels with confidence scores
-4. Aggregates statistics across all sentences
-5. Returns detailed breakdown with overall sentiment metrics
-6. Frontend renders visualizations with bar charts and sentence analysis
+3. **FastText semantic clustering**:
+   - Tokenizes text and extracts unique words
+   - Generates word embeddings using pre-trained FastText model (cc.en.100.bin)
+   - Applies PCA dimensionality reduction for efficiency
+   - Uses KMeans clustering (4 clusters) to group semantically related words
+4. Aggregates words into clusters based on semantic similarity
+5. Returns cluster data with total words, total clusters, and grouped words
+6. Frontend renders word clusters showing semantic relationships
+
+### Corpus Metadata
+**Endpoint:** `GET /api/corpora`
+
+1. Frontend requests available corpus options on page load
+2. Backend returns corpus metadata from corpora.py:
+   - Corpus identifier (brown, gutenberg, reuters, inaugural)
+   - Human-readable label
+   - Brief description of corpus content
+3. Frontend populates corpus selection dropdown
+4. No file processing - simple metadata endpoint
 
 ## Privacy Safeguards
 

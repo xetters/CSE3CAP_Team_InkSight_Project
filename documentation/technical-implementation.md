@@ -16,11 +16,23 @@ POST /api/analyze-file
 ```
 Accepts multipart form data with text file, extracts content, spawns Python subprocess for word frequency analysis, returns JSON with top words and counts.
 
-### Sentiment Analysis Endpoint
+### Keyness Statistics Endpoint
+```
+POST /api/keyness-stats
+```
+Accepts multipart form data with text file and corpus parameter, spawns Python subprocess for chi-squared statistical analysis comparing text against reference corpus, returns JSON with distinctive keywords and effect sizes.
+
+### Semantic Analysis Endpoint
 ```
 POST /api/sentiment
 ```
-Accepts multipart form data with text file, extracts content, spawns Python subprocess for FastText-powered sentiment classification, returns JSON with emotional tone breakdown.
+Accepts multipart form data with text file, extracts content, spawns Python subprocess for FastText-powered semantic clustering, returns JSON with word clusters grouped by semantic similarity.
+
+### Corpus Metadata Endpoint
+```
+GET /api/corpora
+```
+Returns available reference corpus options for keyness analysis with descriptions.
 
 ## Backend Implementation
 
@@ -63,49 +75,63 @@ get_top_words(counter, n=5)
 **Key Functions:**
 
 ```python
-calculate_log_likelihood(observed_count, total_words, ref_count, ref_total)
-# Implements G² log-likelihood ratio test for statistical significance
-# Formula: 2 × Σ(observed × log(observed/expected))
+test_frequency(word, user_freq, corpus_freq, user_total, corpus_total)
+# Implements chi-squared statistical test using scipy's chi2_contingency
+# Returns p-value for statistical significance
 
-analyze_keyness(text, reference_corpus)
+freq_strength(user_freq, corpus_freq, user_total, corpus_total)
+# Calculates Cohen's h effect size
+# Measures practical significance of word distinctiveness
+
+give_star_value(p_value)
+# Converts p-value to significance markers (*, **, ***)
+
+analyze_keyness(text, corpus_name)
 # Comparative analysis identifying distinctive words vs reference corpus
-# Returns ranked keywords with log-likelihood scores
+# Returns ranked keywords with effect sizes and significance markers
 ```
 
-**Algorithm:** Statistical comparison measuring word overuse/underuse relative to reference corpus. Higher scores indicate greater distinctiveness.
+**Algorithm:** Chi-squared statistical test measuring word distinctiveness with Cohen's h effect size. Filters by statistical significance thresholds.
 
-### Sentiment Analysis Module
+### Semantic Clustering Module
 
 **Key Functions:**
 
 ```python
-load_sentiment_model()
-# Loads pre-trained FastText binary model from api/models/
+load_fasttext_model()
+# Loads pre-trained FastText binary model from api/utils/models/
 
-get_sentence_sentiment(sentence)
-# Generates word embeddings and classifies sentiment
-# Returns label (positive/negative/neutral) with confidence score
+get_word_vector(word, model)
+# Generates word embedding for given word using FastText model
 
-analyze_sentiment(text)
-# Processes all sentences and aggregates sentiment statistics
-# Returns overall sentiment, ratios, and per-sentence breakdown
+cluster_words(text)
+# Tokenizes text, generates embeddings, applies PCA and KMeans clustering
+# Returns word clusters grouped by semantic similarity
 ```
 
-**FastText Approach:**
-1. Word embedding generation for semantic understanding
-2. Average embedding computation per sentence
-3. Multi-class classification with confidence scoring
-4. Aggregation of sentence-level results into document-level metrics
+**FastText + KMeans Approach:**
+1. Word tokenization and unique word extraction
+2. Word embedding generation using pre-trained FastText model (cc.en.100.bin)
+3. PCA dimensionality reduction for computational efficiency
+4. KMeans clustering (4 clusters) to group semantically related words
+5. Returns clusters with grouped words showing semantic relationships
 
 ## Dependencies
 
 ### Node.js Packages
 - `express` - Web framework
 - `multer` - Multipart form handling
-- `mammoth` - DOCX text extraction>>>> ???? 
+- `mammoth` - DOCX text extraction
 
-### Python Packages
+### Python Packages (requirements.txt)
 - `nltk` - Tokenization and text processing
-- `fasttext` - Word embeddings and sentiment classification
+- `statsmodels` - Statistical modeling for chi-squared tests
+- `scipy` - Scientific computing for statistical functions
+
+### Python Packages (optional - for semantic clustering)
+- `fasttext-wheel` - Word embeddings and semantic analysis
+- `scikit-learn` - KMeans clustering and PCA
+- `numpy` - Numerical computing
+- `gensim` - Topic modeling utilities
 
 
