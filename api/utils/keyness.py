@@ -2,60 +2,32 @@
 import json
 import sys
 from nltk import word_tokenize, FreqDist
-from nltk.corpus import brown, gutenberg, reuters, inaugural
 from statsmodels.stats.proportion import proportion_effectsize as cohen_h
 from scipy.stats import chi2_contingency
-
-# Corpus metadata: (display_name, simple_description, full_description, loader_function)
-CORPORA = {
-    'brown': {
-        'display_name': 'Brown Corpus',
-        'simple_description': 'Balanced American English',
-        'full_description': 'Balanced corpus of American English across multiple genres',
-        'loader': brown.words
-    },
-    'gutenberg': {
-        'display_name': 'Project Gutenberg',
-        'simple_description': 'Classic literature',
-        'full_description': 'Classic literature from 19th and early 20th century',
-        'loader': gutenberg.words
-    },
-    'reuters': {
-        'display_name': 'Reuters Corpus',
-        'simple_description': 'News articles',
-        'full_description': 'Newswire articles from Reuters',
-        'loader': reuters.words
-    },
-    'inaugural': {
-        'display_name': 'Inaugural Addresses Corpus',
-        'simple_description': 'Presidential speeches',
-        'full_description': 'U.S. Presidential inaugural addresses',
-        'loader': inaugural.words
-    }
-}
+from corpora import CORPORA
 
 def tokenize(text):
-    """Tokenize: lowercase, alphabetic only, min 3 chars"""
+    """Takes text as argument. Splits into normalized words. Returns list of lowercase words (3+ letters only)."""
     return [w.lower() for w in word_tokenize(text) if w.isalpha() and len(w) >= 3]
 
-def log_likelihood(a, b, c, d):
-    """Calculate chi-squared score using scipy chi2_contingency"""
-    if a <= 0 or b <= 0:
+def test_frequency(user_count, corpus_count, user_total, corpus_total):
+    """Takes word counts and totals. Calculates statistical difference using chi-squared test. Returns chi-squared score."""
+    if user_count <= 0 or corpus_count <= 0:
         return 0.0
-    return chi2_contingency([[a, b], [c - a, d - b]])[0]
+    return chi2_contingency([[user_count, corpus_count], [user_total - user_count, corpus_total - corpus_count]])[0]
 
-def effect_size(a, b, c, d):
-    """Calculate Cohen's h effect size using statsmodels"""
-    user_prop = a / c if c > 0 else 0
-    corpus_prop = b / d if d > 0 else 0
+def freq_strength(user_count, corpus_count, user_total, corpus_total):
+    """Takes word counts and totals. Calculates magnitude of difference using Cohen's h. Returns effect size score."""
+    user_prop = user_count / user_total if user_total > 0 else 0
+    corpus_prop = corpus_count / corpus_total if corpus_total > 0 else 0
     return cohen_h(user_prop, corpus_prop)
 
-def significance(ll):
-    """Map LL score to significance marker"""
-    return '***' if ll >= 10.83 else '**' if ll >= 6.63 else '*' if ll >= 3.84 else ''
+def give_star_value(score):
+    """Takes statistical score. Converts to star markers based on thresholds. Returns stars (*, **, ***)."""
+    return '***' if score >= 10.83 else '**' if score >= 6.63 else '*' if score >= 3.84 else ''
 
 def analyze_keyness(text, corpus_name):
-    """Perform keyness analysis comparing user text to NLTK corpus"""
+    """Takes text and corpus name. Identifies distinctive words by comparing frequencies. Returns dict with keywords and stats."""
     if corpus_name not in CORPORA:
         raise ValueError(f"Unknown corpus: {corpus_name}")
 
@@ -70,11 +42,9 @@ def analyze_keyness(text, corpus_name):
     corpus_freq = FreqDist(corpus_tokens)
     corpus_total = len(corpus_tokens)
 
-    # Create set of words to analyze:
-    # - All words from user text (for over-represented keywords)
-    # - Top 500 most frequent corpus words (for under-represented keywords)
-    top_corpus_words = set(word for word, _ in corpus_freq.most_common(500))
-    all_words = set(user_freq.keys()) | top_corpus_words
+    # Combine user words with top 500 corpus words
+    common_words = set(word for word, _ in corpus_freq.most_common(500))
+    all_words = set(user_freq.keys()) | common_words
 
     # Calculate keyness for each word
     keywords = []
@@ -82,29 +52,19 @@ def analyze_keyness(text, corpus_name):
         user_count = user_freq.get(word, 0)
         corpus_count = corpus_freq.get(word, 0)
 
-        # Skip if word doesn't appear in either (shouldn't happen but just in case)
-        if user_count == 0 and corpus_count == 0:
-            continue
+        # Apply smoothing to avoid zero-count errors
+        score = test_frequency(user_count + 0.5, corpus_count + 0.5, user_total, corpus_total)
 
-        # Calculate log-likelihood with smoothing for zero counts
-        a = user_count + 0.5
-        b = corpus_count + 0.5
-        ll = log_likelihood(a, b, user_total, corpus_total)
-
-        if ll >= 3.84:  # Only significant keywords (p < 0.05)
-            es = effect_size(a, b, user_total, corpus_total)
-            norm_freq = (corpus_count / corpus_total) * user_total
+        if score >= 3.84:  # Only keep statistically significant keywords
+            effect = freq_strength(user_count + 0.5, corpus_count + 0.5, user_total, corpus_total)
 
             keywords.append({
                 'word': word,
-                'effect_size': round(es, 4),
-                'll_score': round(ll, 4),
-                'significance': significance(ll),
-                'user_freq': user_count,
-                'corpus_freq': round(norm_freq, 2)
+                'effect_size': round(effect, 4),
+                'significance': give_star_value(score)
             })
 
-    # Sort by effect size (negative first for under-represented, then positive for over-represented)
+    # Sort by strength (under-represented first, then over-represented)
     keywords.sort(key=lambda x: x['effect_size'])
 
     return {

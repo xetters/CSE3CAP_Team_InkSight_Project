@@ -179,21 +179,7 @@ function initKeynessChart(chartId, data) {
           display: false
         },
         tooltip: {
-          callbacks: {
-            label: function(context) {
-              const keyword = allKeywords[context.dataIndex];
-              return [
-                `Effect Size: ${keyword.effect_size.toFixed(2)}`,
-                `LL Score: ${keyword.ll_score.toFixed(1)}`,
-                `Your frequency: ${keyword.user_freq}`,
-                `Corpus frequency: ${keyword.corpus_freq.toFixed(2)}`,
-                `Significance: ${keyword.significance}`,
-                keyword.effect_size > 0 ?
-                  'Over-represented in your text' :
-                  'Under-represented in your text'
-              ];
-            }
-          }
+          enabled: false
         }
       },
       scales: {
