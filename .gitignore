@@ -10,3 +10,4 @@ random-test-scripts/
 **/package-lock.json
 documentation/
 official-documentation/
+backup_documentation.py
