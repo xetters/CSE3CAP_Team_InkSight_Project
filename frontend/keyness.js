@@ -72,7 +72,9 @@ function renderKeynessStats(data) {
 
   const html = `
     <div class="analysis-content">
-      <div class="info-box">
+      <p>Compares how often words appear in your text versus the reference corpus to identify which words make your writing distinctive.</p>
+
+      <div class="info-box" style="background: #fafbfc; border: 1px solid #e8eaed;">
         <p><strong>Reference Corpus:</strong> ${data.corpus.display_name} - ${data.corpus.description}</p>
       </div>
 
@@ -91,13 +93,13 @@ function renderKeynessStats(data) {
         </div>
       </div>
 
-      <div class="info-box">
-        <p><strong>Most Distinctive Words (vs ${data.corpus.display_name}):</strong><br>
+      <div class="info-box" style="background: #fafbfc; border: 1px solid #e8eaed;">
+        <p><strong>Most Distinctive Words:</strong><br>
         <strong>Over-represented in your text:</strong> ${top3Over.map(k => `"${k.word}"`).join(", ") || "None"}<br>
         <strong>Under-represented in your text:</strong> ${top3Under.map(k => `"${k.word}"`).join(", ") || "None"}</p>
       </div>
 
-      <h4>Keyness Comparison: Your Text vs ${data.corpus.display_name} (p&lt;0.05)</h4>
+      <h4>Keyness Comparison</h4>
 
       <div class="legend">
         <div class="legend-item">
@@ -114,11 +116,15 @@ function renderKeynessStats(data) {
         <canvas id="${chartId}"></canvas>
       </div>
 
-      <div class="info-box warning">
-        <p><strong>Significance Levels:</strong><br>
-        ${veryHigh} keywords at p &lt; 0.001 (***)<br>
-        ${high} keywords at p &lt; 0.01 (**)<br>
-        ${moderate} keywords at p &lt; 0.05 (*)</p>
+      <div class="info-box">
+        <p><strong>Effect Size:</strong> Shows how much more or less frequently you used each word compared to the reference.</p>
+      </div>
+
+      <div class="info-box">
+        <p><strong>Confidence Breakdown:</strong><br>
+        ${veryHigh} words with *** (p&lt;0.001)<br>
+        ${high} words with ** (p&lt;0.01)<br>
+        ${moderate} words with * (p&lt;0.05)</p>
       </div>
     </div>
   `;
