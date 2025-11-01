@@ -14,9 +14,6 @@
     "express": "^5.1.0",
     "inksight-project": "file:..",
     "mammoth": "^1.11.0",
-    "multer": "^2.0.2",
-    "next": "^15.5.3",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "multer": "^2.0.2"
   }
 }

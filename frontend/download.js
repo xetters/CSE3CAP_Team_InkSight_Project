@@ -33,7 +33,6 @@ function generateHTML(title, wordData, sentData, keynData) {
       <div class="stat-label">Word Count</div>
       <div class="stat-value">${wordData.word_count}</div>
     </div>
-    <p><strong>Insight:</strong> ${wordData.insight || 'N/A'}</p>
     <h3>Top Words</h3>
     <table>
       <thead>
