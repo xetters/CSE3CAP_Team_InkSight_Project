@@ -15,6 +15,11 @@
 
 **Status:** Working as intended. This is a known limitation of the statistical method, not a software bug.
 
+## FastText Model: Copyright Compliance Issue
+
+**Issue:** Current `cc.en.100.bin` (Common Crawl) model violates copyright constraints by being trained on entire web including copyrighted sources.
+
+**Fix:** Replace with FastText Wikipedia model, reduce to 100 dimensions, and load identically—Wikipedia is CC-BY-SA 3.0 licensed and more defensibly copyright-compliant than web-scraped Common Crawl data.
 
 ## More things to consider:
 

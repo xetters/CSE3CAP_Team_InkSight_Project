@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 import json
 import sys
-import math
 from nltk import word_tokenize, FreqDist
 from nltk.corpus import brown, gutenberg, reuters, inaugural
+from statsmodels.stats.proportion import proportion_effectsize as cohen_h
+from scipy.stats import chi2_contingency
 
 # Corpus metadata: (display_name, description, loader_function)
 CORPORA = {
@@ -18,22 +19,16 @@ def tokenize(text):
     return [w.lower() for w in word_tokenize(text) if w.isalpha() and len(w) >= 3]
 
 def log_likelihood(a, b, c, d):
-    """Calculate log-likelihood G² score"""
-    if a == 0 or b == 0:
+    """Calculate chi-squared score using scipy chi2_contingency"""
+    if a <= 0 or b <= 0:
         return 0.0
-    E1 = c * (a + b) / (c + d)
-    E2 = d * (a + b) / (c + d)
-    if E1 == 0 or E2 == 0:
-        return 0.0
-    return 2 * ((a * math.log(a / E1)) + (b * math.log(b / E2)))
+    return chi2_contingency([[a, b], [c - a, d - b]])[0]
 
 def effect_size(a, b, c, d):
-    """Calculate Cohen's h effect size"""
+    """Calculate Cohen's h effect size using statsmodels"""
     user_prop = a / c if c > 0 else 0
     corpus_prop = b / d if d > 0 else 0
-    pooled_prop = (a + b) / (c + d)
-    pooled_sd = math.sqrt(pooled_prop * (1 - pooled_prop))
-    return (user_prop - corpus_prop) / pooled_sd if pooled_sd > 0 else 0.0
+    return cohen_h(user_prop, corpus_prop)
 
 def significance(ll):
     """Map LL score to significance marker"""

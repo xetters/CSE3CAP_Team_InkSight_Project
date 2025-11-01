@@ -65,9 +65,9 @@ python --version
    This is from the FastText documentation website, you can find other models or check for yourself at the mentioned link
    Model used is cc.en.300.bin (English language)
 
-   **Semantic cluster analysis libraries**
+   **Semantic cluster analysis and NLP processing libraries**
    ```
-   pip install fasttext-wheel scikit-learn numpy gensim
+   pip install fasttext-wheel scikit-learn numpy gensim statsmodels nltk scipy
    ```
    **Adapt the model dimension**
    ```

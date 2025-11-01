@@ -8,7 +8,7 @@ async function loadCorpora() {
     const corpora = await res.json();
     corpusSelect.innerHTML = '<option value="">Select a corpus...</option>' +
       corpora.map(c =>
-        `<option value="${c.name}" title="${c.description}">${c.display_name}</option>`
+        `<option value="${c.name}">${c.display_name} - ${c.description}</option>`
       ).join('');
   } catch (err) {
     corpusSelect.innerHTML = '<option value="">Error loading corpora</option>';
