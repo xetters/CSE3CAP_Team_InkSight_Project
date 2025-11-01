@@ -6,12 +6,32 @@ from nltk.corpus import brown, gutenberg, reuters, inaugural
 from statsmodels.stats.proportion import proportion_effectsize as cohen_h
 from scipy.stats import chi2_contingency
 
-# Corpus metadata: (display_name, description, loader_function)
+# Corpus metadata: (display_name, simple_description, full_description, loader_function)
 CORPORA = {
-    'brown': ('Brown Corpus', 'Balanced corpus of American English across multiple genres', brown.words),
-    'gutenberg': ('Project Gutenberg', 'Classic literature from 19th and early 20th century', gutenberg.words),
-    'reuters': ('Reuters Corpus', 'Newswire articles from Reuters', reuters.words),
-    'inaugural': ('Inaugural Addresses Corpus', 'U.S. Presidential inaugural addresses', inaugural.words)
+    'brown': {
+        'display_name': 'Brown Corpus',
+        'simple_description': 'Balanced American English',
+        'full_description': 'Balanced corpus of American English across multiple genres',
+        'loader': brown.words
+    },
+    'gutenberg': {
+        'display_name': 'Project Gutenberg',
+        'simple_description': 'Classic literature',
+        'full_description': 'Classic literature from 19th and early 20th century',
+        'loader': gutenberg.words
+    },
+    'reuters': {
+        'display_name': 'Reuters Corpus',
+        'simple_description': 'News articles',
+        'full_description': 'Newswire articles from Reuters',
+        'loader': reuters.words
+    },
+    'inaugural': {
+        'display_name': 'Inaugural Addresses Corpus',
+        'simple_description': 'Presidential speeches',
+        'full_description': 'U.S. Presidential inaugural addresses',
+        'loader': inaugural.words
+    }
 }
 
 def tokenize(text):
@@ -45,8 +65,8 @@ def analyze_keyness(text, corpus_name):
     user_total = len(user_tokens)
 
     # Load and tokenize corpus
-    display_name, description, loader = CORPORA[corpus_name]
-    corpus_tokens = [w.lower() for w in loader() if w.isalpha() and len(w) >= 3]
+    corpus_data = CORPORA[corpus_name]
+    corpus_tokens = [w.lower() for w in corpus_data['loader']() if w.isalpha() and len(w) >= 3]
     corpus_freq = FreqDist(corpus_tokens)
     corpus_total = len(corpus_tokens)
 
@@ -93,8 +113,8 @@ def analyze_keyness(text, corpus_name):
         'significant_keywords': len(keywords),
         'corpus': {
             'name': corpus_name,
-            'display_name': display_name,
-            'description': description,
+            'display_name': corpus_data['display_name'],
+            'description': corpus_data['full_description'],
             'total_words': corpus_total
         },
         'keywords': keywords
