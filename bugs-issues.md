@@ -54,4 +54,6 @@ Example use:
 import fasttext
 model = fasttext.load_model("models/cc.en.300.bin")
 
+## Keyness Statistics Download
 
+Update the keyness statistics download functionality (features were removed and its currently not working)
