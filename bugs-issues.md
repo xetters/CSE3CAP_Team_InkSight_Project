@@ -19,3 +19,34 @@
 ## More things to consider:
 
 Common word filter: "the" "and" "of" "a"?
+
+#ALSO!
+need c++ build tools for windows python installation
+pip install fasttext-wheel
+make python script for automating the installation?
+
+## Example fast text fast setup:
+
+FastText setup
+
+
+Install required Python packages:
+pip install fasttext-wheel scikit-learn numpy gensim
+
+
+
+Download the English FastText model:
+git clone https://github.com/facebookresearch/fastText.git
+cd fastText
+python download_model.py en
+
+
+
+Move the downloaded file cc.en.300.bin into your project’s models folder.
+
+
+Example use:
+import fasttext
+model = fasttext.load_model("models/cc.en.300.bin")
+
+
