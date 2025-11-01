@@ -428,65 +428,30 @@ async function init() {
   }
 
   function renderSentiment(data) {
-    if (!data) {
-      return '<p>No sentiment data available</p>';
+    if (!data || !data.semantic_summary) {
+      return '<p>No semantic data available</p>';
     }
 
-    const sentimentColor = {
-      'positive': '#4caf50',
-      'negative': '#ef4444',
-      'neutral': '#6b7280'
-    };
-
-    const color = sentimentColor[data.overall_sentiment] || '#6b7280';
+    const summary = data.semantic_summary;
 
     let html = `
       <div class="analysis-content">
-        <p><strong>Overall sentiment:</strong> <span style="color: ${color}; font-weight: 600; text-transform: capitalize;">${data.overall_sentiment}</span></p>
+        <h3>Semantic Cluster Analysis</h3>
 
-        <div class="sentiment-bar-container">
-          <div class="sentiment-bar">
-            <div class="sentiment-bar-fill sentiment-positive" style="height: ${data.positive_ratio * 180}px;"></div>
-            <p class="sentiment-label" style="color: var(--success);">Positive</p>
-            <p class="sentiment-value">${(data.positive_ratio * 100).toFixed(1)}%</p>
-          </div>
-          <div class="sentiment-bar">
-            <div class="sentiment-bar-fill sentiment-neutral" style="height: ${data.neutral_ratio * 180}px;"></div>
-            <p class="sentiment-label" style="color: var(--muted);">Neutral</p>
-            <p class="sentiment-value">${(data.neutral_ratio * 100).toFixed(1)}%</p>
-          </div>
-          <div class="sentiment-bar">
-            <div class="sentiment-bar-fill sentiment-negative" style="height: ${data.negative_ratio * 180}px;"></div>
-            <p class="sentiment-label" style="color: var(--danger);">Negative</p>
-            <p class="sentiment-value">${(data.negative_ratio * 100).toFixed(1)}%</p>
-          </div>
-        </div>
+        <p><strong>Total Words:</strong> ${summary.total_words}</p>
+        <p><strong>Total Word Clusters:</strong> ${summary.total_clusters}</p>
+
+        <h4 style="margin-top: 20px;">The writer has a strong aTinity for</h4>
+        <ul style="padding-left: 20px; line-height: 1.6;">
     `;
 
-    if (data.sentences && data.sentences.length > 0) {
-      const sentenceRows = data.sentences
-        .map(s => `
-          <tr>
-            <td style="text-align: left;">${escapeHtml(s.text)}</td>
-            <td style="color: ${sentimentColor[s.sentiment] || '#666'}; font-weight: 600; text-transform: capitalize;">${s.sentiment}</td>
-          </tr>
-        `).join('');
-
+    summary.top_clusters.forEach(cluster => {
       html += `
-        <h4 style="margin-top: 24px; margin-bottom: 12px;">Sentence-by-Sentence Analysis</h4>
-        <table>
-          <thead>
-            <tr>
-              <th>Sentence</th>
-              <th>Sentiment</th>
-            </tr>
-          </thead>
-          <tbody>${sentenceRows}</tbody>
-        </table>
+        <li>
+          <strong>${cluster.theme}</strong> — ${cluster.count} mentions
+        </li>
       `;
-    }
-
-    html += '</div>';
+    });
     return html;
   }
 

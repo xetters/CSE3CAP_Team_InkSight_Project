@@ -68,16 +68,7 @@ async function handleSentiment(req, res) {
       }
       try { 
         const result = JSON.parse(out);
-        return res.json({
-        overall_sentiment: "semantic_clusters",
-        semantic_summary: {
-          total_words: result.total_words, 
-          total_clusters: result.total_clusters, //number of clusters
-          top_clusters: result.top_clusters, //top 4 clusters     
-          clusters: result.clusters // all clusters (which can be avaliable for the download function)
-        }
-        });
-    
+        return res.json(result);    
       } catch { res.status(400).json({ error: 'Bad JSON from sentiment analysis' }); }
     });
     py.stdin.write(text);

@@ -111,9 +111,9 @@ output = {
     "overall_sentiment": "semantic_clusters",  #
     "semantic_summary": {
         "total_words": result.get("total_words", 0),
-        "total_clusters": result.get("total_clusters", 0),
-        "top_clusters": result.get("top_clusters", []),
-        "clusters": result.get("clusters", [])
+        "total_clusters": result.get("total_clusters", 0), #cluster count
+        "top_clusters": result.get("top_clusters", []), #top 4 clusters
+        "clusters": result.get("clusters", []) #all clusters
     }
 }
 print(json.dumps(output, ensure_ascii=False))
