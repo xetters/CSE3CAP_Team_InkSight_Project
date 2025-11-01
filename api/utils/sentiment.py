@@ -48,60 +48,65 @@ def get_word_vector(model, tokens):
             continue
     return np.array(vectors), valid_tokens
 
-def cluster_words(vectors, tokens, n_clusters=4):
-    """Cluster embedding into semantic groups"""
-    if len(vectors) < n_clusters:
-        n_clusters = max(1, len(vectors))
+def cluster_words(vectors, tokens, max_clusters=15):
+    """Cluster embeddings into semantic groups with dynamic cluster size"""
+    n_clusters = max(2, min(max_clusters, len(tokens) // 200))  # 1 cluster per 200 words
+    n_clusters = min(n_clusters, len(tokens))  # never more clusters than tokens
+    
     kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=5)
     labels = kmeans.fit_predict(vectors)
-    
-    # Optional PCA for visualization compatibility
-    pca = PCA(n_components=2, random_state=42)
-    reduced = pca.fit_transform(vectors)
 
     clusters = []
     for i in range(n_clusters):
         cluster_indices = np.where(labels == i)[0]
+        cluster_tokens = [tokens[j] for j in cluster_indices]
+
+        # Remove duplicates word entries
+        unique_words = list(dict.fromkeys(cluster_tokens))
+
+        # Take top 10 nearest to centroid 
         centroid = kmeans.cluster_centers_[i]
         distances = np.linalg.norm(vectors[cluster_indices] - centroid, axis=1)
-        top_idx = cluster_indices[np.argsort(distances)[:10]]
-        top_words = [tokens[j] for j in top_idx]
+        sorted_idx = np.argsort(distances)
+
+        top_unique = []
+        for idx in sorted_idx:
+            w = tokens[cluster_indices[idx]]
+            if w not in top_unique:
+                top_unique.append(w)
+            if len(top_unique) == 10:
+                break
+
         clusters.append({
             "label": f"Cluster {i}",
-            "words": top_words
+            "word_count": len(unique_words),
+            "words": top_unique
         })
-    return clusters
 
-"""Main function"""
+    # Sort clusters by size biggest to smallest
+    clusters = sorted(clusters, key=lambda c: c["word_count"], reverse=True)
+    return clusters
 
 def analyze_semantic(text: str) -> dict:
     """Analyze semantic clusters in the text."""
     tokens = tokenize(text)
-    
+
     if not tokens:
-        return {
-            "overall_semantic": "no_clusters",
-            "cluster_count": 0,
-            "clusters": []
-        }
-    
+        return {"total_words": 0, "total_clusters": 0, "clusters": [], "top_clusters": []}
+
     model = load_model()
     vectors, valid_tokens = get_word_vector(model, tokens)
 
-    if len(valid_tokens) == 0:
-        return {
-            "overall_semantic": "no_valid_tokens",
-            "cluster_count": 0,
-            "clusters": []
-        }
-    
-    clusters = cluster_words(vectors, valid_tokens, n_clusters=4)
+    if not valid_tokens:
+        return {"total_words": len(tokens), "total_clusters": 0, "clusters": [], "top_clusters": []}
+
+    clusters = cluster_words(vectors, valid_tokens)
 
     return {
         "total_words": len(tokens),
         "total_clusters": len(clusters),
         "clusters": clusters,
-        "top_clusters": clusters[:4]  #return top 4 clusters
+        "top_clusters": clusters[:4]  # top 4 biggest clusters
     }
 
 # Read from stdin when called from Node

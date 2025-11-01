@@ -434,29 +434,47 @@ async function init() {
 
   function renderSentiment(data) {
     if (!data || !data.semantic_summary) {
-      return '<p>No semantic data available</p>';
+      return '<p>No semantic data available.</p>';
     }
 
     const summary = data.semantic_summary;
+    const clusters = summary.clusters || [];
+    const topClusters = summary.top_clusters || [];
+
+    function formatClusterName(cluster) {
+      if (cluster.theme) return cluster.theme;
+      if (cluster.words && cluster.words.length > 0) return cluster.words[0];
+      return cluster.label || "Unnamed Cluster";
+    }
 
     let html = `
       <div class="analysis-content">
         <h3>Semantic Cluster Analysis</h3>
 
         <p><strong>Total Words:</strong> ${summary.total_words}</p>
-        <p><strong>Total Word Clusters:</strong> ${summary.total_clusters}</p>
+        <p><strong>Total Word Clusters Detected:</strong> ${summary.total_clusters}</p>
 
-        <h4 style="margin-top: 20px;">The writer has a strong aTinity for</h4>
+        <h4 style="margin-top: 20px;">The writing has a strong affinity for...</h4>
         <ul style="padding-left: 20px; line-height: 1.6;">
     `;
 
-    summary.top_clusters.forEach(cluster => {
+    topClusters.forEach(cluster => {
       html += `
         <li>
-          <strong>${cluster.theme}</strong> — ${cluster.count} mentions
+          <strong>${formatClusterName(cluster)}</strong> — ${cluster.word_count ?? cluster.words.length} related words
         </li>
       `;
     });
+
+    html += `
+        </ul>
+
+        <div style="margin-top: 20px; font-size: 0.85rem; opacity: 0.7;">
+          You can see more details in by downloading the full report.
+        </div>
+      </div>
+    `;
+
     return html;
   }
 
