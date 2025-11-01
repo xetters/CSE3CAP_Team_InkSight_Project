@@ -208,6 +208,11 @@ async function init() {
     const keynessStatsSelected = $('keynessStatsCheck').checked;
     const hasAnalysisOption = keywordAnalysisSelected || sentimentSelected || keynessStatsSelected;
 
+    // Show/hide analysis warning
+    const analysisWarning = $('analysisWarning');
+    const shouldShowWarning = (hasFile || hasText) && !hasAnalysisOption;
+    analysisWarning.style.display = shouldShowWarning ? 'block' : 'none';
+
     // If keyness stats is selected, corpus must be selected
     const keynessCorpusValid = !keynessStatsSelected || $('corpusSelect').value.trim() !== '';
 

@@ -15,7 +15,45 @@
 
 **Status:** Working as intended. This is a known limitation of the statistical method, not a software bug.
 
+## FastText Model: Copyright Compliance Issue
+
+**Issue:** Current `cc.en.100.bin` (Common Crawl) model violates copyright constraints by being trained on entire web including copyrighted sources.
+
+**Fix:** Replace with FastText Wikipedia model, reduce to 100 dimensions, and load identically—Wikipedia is CC-BY-SA 3.0 licensed and more defensibly copyright-compliant than web-scraped Common Crawl data.
 
 ## More things to consider:
 
 Common word filter: "the" "and" "of" "a"?
+
+#ALSO!
+need c++ build tools for windows python installation
+pip install fasttext-wheel
+make python script for automating the installation?
+
+## Example fast text fast setup:
+
+FastText setup
+
+
+Install required Python packages:
+pip install fasttext-wheel scikit-learn numpy gensim
+
+
+
+Download the English FastText model:
+git clone https://github.com/facebookresearch/fastText.git
+cd fastText
+python download_model.py en
+
+
+
+Move the downloaded file cc.en.300.bin into your project’s models folder.
+
+
+Example use:
+import fasttext
+model = fasttext.load_model("models/cc.en.300.bin")
+
+## Keyness Statistics Download
+
+Update the keyness statistics download functionality (features were removed and its currently not working)

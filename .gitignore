@@ -1,4 +1,12 @@
 node_modules/
-/fastText/
+fastText/
 cc.en.300.bin
 cc.en.100.bin
+CLAUDE.md
+.claude
+.vscode
+models/
+random-test-scripts/
+**/package-lock.json
+documentation/
+official-documentation/

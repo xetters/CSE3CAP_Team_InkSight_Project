@@ -2,11 +2,12 @@ const { spawn } = require('child_process');
 const path = require('path');
 
 // Corpus metadata for keyness analysis (returned to frontend for corpus selector)
+// Uses simple_description for dropdown display
 const CORPORA = [
-  { name: 'brown', display_name: 'Brown Corpus', description: 'Balanced corpus of American English across multiple genres' },
-  { name: 'gutenberg', display_name: 'Project Gutenberg', description: 'Classic literature from 19th and early 20th century' },
-  { name: 'reuters', display_name: 'Reuters Corpus', description: 'Newswire articles from Reuters' },
-  { name: 'inaugural', display_name: 'Inaugural Addresses Corpus', description: 'U.S. Presidential inaugural addresses' }
+  { name: 'brown', display_name: 'Brown Corpus', description: 'Balanced American English' },
+  { name: 'gutenberg', display_name: 'Project Gutenberg', description: 'Classic literature' },
+  { name: 'reuters', display_name: 'Reuters Corpus', description: 'News articles' },
+  { name: 'inaugural', display_name: 'Inaugural Addresses Corpus', description: 'Presidential speeches' }
 ];
 
 // Return available corpora

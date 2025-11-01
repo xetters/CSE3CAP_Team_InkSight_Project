@@ -37,14 +37,17 @@ python --version
    cd ..
    ```
 
-4. **Install dependencies** in the `frontend` subfolder (if applicable):
+4. **Install Python dependencies**:
    ```bash
-   cd frontend
-   npm install
-   cd ..
+   pip install -r api/utils/requirements.txt
    ```
 
-## FastText pre-train model Installation 
+5. **Download NLTK data**:
+   ```bash
+   python api/utils/setup_nltk.py
+   ```
+
+## FastText pre-train model Installation
    You can run these command or manually download at the link: https://fasttext.cc/docs/en/crawl-vectors.html
 
    **Download the model**
@@ -65,16 +68,16 @@ python --version
    This is from the FastText documentation website, you can find other models or check for yourself at the mentioned link
    Model used is cc.en.300.bin (English language)
 
-   **Semantic cluster analysis libraries**
+   **Semantic cluster analysis and NLP processing libraries**
    ```
-   pip install fasttext-wheel scikit-learn numpy gensim
+   pip install fasttext-wheel scikit-learn numpy gensim statsmodels nltk scipy
    ```
    **Adapt the model dimension**
    ```
    cd fastText
    python reduce_model.py [Path to the model] cc.en.300.bin [desired dimension]
    ```
-   Example, to get vectors of dimension 100: 
+   Example, to get vectors of dimension 100:
    ```
    python reduce_model.py [Path to the model] cc.en.300.bin 100
    ```
