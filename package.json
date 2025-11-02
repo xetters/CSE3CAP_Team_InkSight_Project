@@ -5,7 +5,8 @@
   "scripts": {
     "start-api": "node api/app.js",
     "open-browser": "node -e \"const { exec } = require('child_process'); const url = 'http://localhost:3000'; const cmd = process.platform === 'win32' ? `start ${url}` : process.platform === 'darwin' ? `open ${url}` : `xdg-open ${url}`; exec(cmd);\"",
-    "full-setup": "npm install && npm install --prefix api && pip install -r api/utils/requirements.txt && python api/utils/setup_nltk.py"
+    "full-setup": "npm install && npm install --prefix api && pip install -r api/utils/requirements.txt && python api/utils/setup_nltk.py",
+    "full-setup-with-fasttext": "npm install && npm install --prefix api && python api/utils/full-installation.py"
   },
   "keywords": [],
   "author": "",
