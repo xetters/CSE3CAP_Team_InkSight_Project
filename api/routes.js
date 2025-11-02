@@ -1,9 +1,9 @@
 const express = require('express');
 const multer = require('multer');
-const { spawn } = require('child_process');
 const path = require('path');
 const mammoth = require('mammoth');
 const keynessController = require('./controllers/keynessController');
+const { runPythonScript } = require('./utils/pythonRunner');
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -36,17 +36,10 @@ async function handleAnalyzeFile(req, res) {
   if (!req.file) return res.status(400).json({ error: 'No file' });
   try {
     const text = await extractText(req.file);
-    const py = spawn('python', [path.join(__dirname, 'utils', 'analyze.py')]);
-    let out = '';
-    py.stdout.on('data', (d) => (out += d));
-    py.on('close', () => {
-      try { res.json(JSON.parse(out)); }
-      catch { res.status(400).json({ error: 'Bad JSON' }); }
-    });
-    py.stdin.write(text);
-    py.stdin.end();
+    const result = await runPythonScript('analyze.py', text);
+    res.json(result);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 }
 
@@ -55,26 +48,10 @@ async function handleSentiment(req, res) {
   if (!req.file) return res.status(400).json({ error: 'No file' });
   try {
     const text = await extractText(req.file);
-    const py = spawn('python', [path.join(__dirname, 'utils', 'sentiment.py')]);
-
-    let out = '', err = '';
-    py.stdout.on('data', (d) => (out += d));
-    py.stderr.on('data', (d) => (err += d));
-
-    py.on('close', (code) => {
-      if (code !== 0) {
-        console.error('Python error:', err);
-        return res.status(500).json({ error: 'Sentiment analysis failed' });
-      }
-      try { 
-        const result = JSON.parse(out);
-        return res.json(result);    
-      } catch { res.status(400).json({ error: 'Bad JSON from sentiment analysis' }); }
-    });
-    py.stdin.write(text);
-    py.stdin.end();
+    const result = await runPythonScript('sentiment.py', text);
+    res.json(result);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 }
 
