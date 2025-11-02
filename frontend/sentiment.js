@@ -19,6 +19,7 @@ function renderSemantic(data) {
   }
 
   const summary = data.semantic_summary;
+  const chartId = 'semanticChart-' + Date.now();
 
   let html = `
   <div class="analysis-content">
@@ -27,6 +28,11 @@ function renderSemantic(data) {
       <h3>Semantic Clusters</h3>
       <p><strong>Total Words:</strong> ${summary.total_words}</p>
       <p><strong>Total Clusters:</strong> ${summary.total_clusters}</p>
+    </div>
+
+    <h4>Cluster Visualization</h4>
+    <div class="chart-container" style="height: 500px;">
+      <canvas id="${chartId}"></canvas>
     </div>
 
     <h4>Top Clusters</h4>
@@ -39,6 +45,13 @@ function renderSemantic(data) {
       `).join("")}
     </ul>
   </div>`;
+
+  // Initialize chart after DOM update
+  setTimeout(() => {
+    if (window.initSemanticChart) {
+      initSemanticChart(chartId, data);
+    }
+  }, 0);
 
   return html;
 }

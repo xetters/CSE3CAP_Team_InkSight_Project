@@ -6,7 +6,6 @@ CLAUDE.md
 .claude
 .vscode
 models/
-random-test-scripts/
 **/package-lock.json
 documentation/
 official-documentation/

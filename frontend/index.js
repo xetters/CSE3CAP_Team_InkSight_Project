@@ -440,6 +440,7 @@ async function init() {
     const summary = data.semantic_summary;
     const clusters = summary.clusters || [];
     const topClusters = summary.top_clusters || [];
+    const chartId = 'semanticChart-' + Date.now();
 
     function formatClusterName(cluster) {
       if (cluster.theme) return cluster.theme;
@@ -453,6 +454,11 @@ async function init() {
 
         <p><strong>Total Words:</strong> ${summary.total_words}</p>
         <p><strong>Total Word Clusters Detected:</strong> ${summary.total_clusters}</p>
+
+        <h4>Cluster Visualization</h4>
+        <div class="chart-container" style="height: 500px;">
+          <canvas id="${chartId}"></canvas>
+        </div>
 
         <h4 style="margin-top: 20px;">The writing has a strong affinity for...</h4>
         <ul style="padding-left: 20px; line-height: 1.6;">
@@ -474,6 +480,13 @@ async function init() {
         </div>
       </div>
     `;
+
+    // Initialize chart after DOM update
+    setTimeout(() => {
+      if (window.initSemanticChart) {
+        initSemanticChart(chartId, data);
+      }
+    }, 0);
 
     return html;
   }
