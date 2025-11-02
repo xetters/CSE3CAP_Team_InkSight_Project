@@ -8,9 +8,10 @@ import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 
-script_dir = os.path.dirname(os.path.abspath(__file__)) + '/../../models/cc.en.100.bin'
+#change model here
+script_dir = os.path.dirname(os.path.abspath(__file__)) + '/../../models/cc.en.300.bin'
 pj_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
-model_path = os.path.join(pj_root, 'models', 'cc.en.100.bin')
+model_path = os.path.join(pj_root, 'models', 'cc.en.300.bin')
 fallback_path = os.path.join(script_dir,'fallback.txt')
 
 def tokenize(text: str) -> list[str]:
