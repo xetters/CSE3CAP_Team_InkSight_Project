@@ -684,17 +684,6 @@ th {
   transition: height 0.3s;
 }
 
-.sentiment-positive {
-  background: var(--success);
-}
-
-.sentiment-neutral {
-  background: var(--muted);
-}
-
-.sentiment-negative {
-  background: var(--danger);
-}
 
 .sentiment-label {
   font-size: 0.9rem;

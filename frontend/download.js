@@ -44,20 +44,7 @@ function generateHTML(title, wordData, sentData, keynData) {
     </table>
   ` : ''}
   ${sentData ? `
-    <h2>Sentiment Analysis</h2>
-    <p><strong>Overall Sentiment:</strong> ${sentData.overall_sentiment}</p>
-    <div class="stat">
-      <div class="stat-label">Positive</div>
-      <div class="stat-value">${(sentData.positive_ratio * 100).toFixed(1)}%</div>
-    </div>
-    <div class="stat">
-      <div class="stat-label">Neutral</div>
-      <div class="stat-value">${(sentData.neutral_ratio * 100).toFixed(1)}%</div>
-    </div>
-    <div class="stat">
-      <div class="stat-label">Negative</div>
-      <div class="stat-value">${(sentData.negative_ratio * 100).toFixed(1)}%</div>
-    </div>
+    <h2>Semantic Analysis</h2>
   ` : ''}
   ${keynData ? `
     <h2>Keyness Statistics</h2>
@@ -144,8 +131,8 @@ function downloadSection(section) {
     const html = generateHTML('Word Analysis', lastResult, null, null);
     downloadHTML('inksight-word-analysis.html', html);
   } else if (section === 'sentiment') {
-    const html = generateHTML('Sentiment Analysis', null, sentimentData, null);
-    downloadHTML('inksight-sentiment.html', html);
+    const html = generateHTML('Semantic Analysis', null, sentimentData, null);
+    downloadHTML('inksight-semantic-analysis.html', html);
   } else if (section === 'keyness-stats') {
     const html = generateHTML('Keyness Statistics', null, null, keynessData);
     downloadHTML('inksight-keyness-stats.html', html);
