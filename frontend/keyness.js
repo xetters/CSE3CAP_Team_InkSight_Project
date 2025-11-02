@@ -101,6 +101,10 @@ function renderKeynessStats(data) {
 
       <h4>Keyness Comparison</h4>
 
+      <div class="info-box" style="background: #fef3c7; border-left-color: #f59e0b;">
+        <p style="color: #92400e;">Showing top 15 most distinctive words from each category. Full keyword list includes ${data.significant_keywords} significant words.</p>
+      </div>
+
       <div class="legend">
         <div class="legend-item">
           <div class="legend-color color-user"></div>
@@ -141,7 +145,11 @@ function renderKeynessStats(data) {
 function initKeynessChart(chartId, data) {
   const negativeKeywords = data.keywords.filter(k => k.effect_size < 0);
   const positiveKeywords = data.keywords.filter(k => k.effect_size > 0).reverse();
-  const allKeywords = [...negativeKeywords, ...positiveKeywords];
+
+  // Limit to top 15 from each side to prevent chart overflow
+  const topNegative = negativeKeywords.slice(0, 15);
+  const topPositive = positiveKeywords.slice(0, 15);
+  const allKeywords = [...topNegative, ...topPositive];
 
   const labels = allKeywords.map(k => `${k.word} ${k.significance}`);
   const chartData = allKeywords.map(k => k.effect_size);
@@ -160,8 +168,22 @@ function initKeynessChart(chartId, data) {
     k.effect_size > 0 ? 'rgba(37, 99, 235, 1)' : 'rgba(22, 163, 74, 1)'
   );
 
-  const ctx = document.getElementById(chartId)?.getContext('2d');
-  if (!ctx) return;
+  const canvas = document.getElementById(chartId);
+  if (!canvas) {
+    console.error('Canvas not found:', chartId);
+    return;
+  }
+
+  // Set dynamic height based on number of keywords (30px per bar, max 30 keywords = 900px)
+  const minHeightPerBar = 30;
+  const dynamicHeight = Math.max(600, allKeywords.length * minHeightPerBar);
+  canvas.parentElement.style.height = `${dynamicHeight}px`;
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    console.error('Could not get canvas context');
+    return;
+  }
 
   new Chart(ctx, {
     type: 'bar',
@@ -179,6 +201,12 @@ function initKeynessChart(chartId, data) {
       indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
+      layout: {
+        padding: {
+          left: 10,
+          right: 10
+        }
+      },
       plugins: {
         legend: { display: false },
         title: {
@@ -194,7 +222,9 @@ function initKeynessChart(chartId, data) {
           grid: { color: '#e5e7eb' }
         },
         y: {
-          ticks: { font: { size: 11 } },
+          ticks: {
+            font: { size: 11 }
+          },
           grid: { display: false }
         }
       }
