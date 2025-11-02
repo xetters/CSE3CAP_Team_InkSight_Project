@@ -61,7 +61,7 @@ function generateHTML(title, wordData, sentData, keynData) {
   ` : ''}
   ${keynData ? `
     <h2>Keyness Statistics</h2>
-    <p><strong>Corpus:</strong> ${keynData.corpus.display_name}</p>
+    <p><strong>Corpus:</strong> ${keynData.corpus.display_name} - ${keynData.corpus.description}</p>
     <div class="stat">
       <div class="stat-label">Total Words</div>
       <div class="stat-value">${keynData.total_words}</div>
@@ -74,13 +74,33 @@ function generateHTML(title, wordData, sentData, keynData) {
       <div class="stat-label">Significant Keywords</div>
       <div class="stat-value">${keynData.significant_keywords}</div>
     </div>
-    <h3>Keywords</h3>
+    <p style="background: #fef3c7; padding: 10px; border-left: 4px solid #f59e0b; color: #92400e;">
+      <strong>Note:</strong> Showing top 50 most distinctive keywords. Full analysis includes ${keynData.significant_keywords} significant words.
+    </p>
+    <h3>Your Keywords (Over-represented in your text)</h3>
     <table>
       <thead>
-        <tr><th>Word</th><th>Your Freq</th><th>Corpus Freq</th><th>Effect Size</th><th>LL Score</th><th>Sig</th></tr>
+        <tr><th>Word</th><th>Effect Size</th><th>Significance</th></tr>
       </thead>
       <tbody>
-        ${(keynData.keywords || []).map(k => `<tr><td>${k.word}</td><td>${k.user_freq}</td><td>${k.corpus_freq}</td><td>${k.effect_size}</td><td>${k.ll_score}</td><td>${k.significance}</td></tr>`).join('')}
+        ${(keynData.keywords || [])
+          .filter(k => k.effect_size > 0)
+          .slice(0, 25)
+          .map(k => `<tr><td>${k.word}</td><td>${k.effect_size}</td><td>${k.significance}</td></tr>`)
+          .join('')}
+      </tbody>
+    </table>
+    <h3>Reference Keywords (Under-represented in your text)</h3>
+    <table>
+      <thead>
+        <tr><th>Word</th><th>Effect Size</th><th>Significance</th></tr>
+      </thead>
+      <tbody>
+        ${(keynData.keywords || [])
+          .filter(k => k.effect_size < 0)
+          .slice(0, 25)
+          .map(k => `<tr><td>${k.word}</td><td>${k.effect_size}</td><td>${k.significance}</td></tr>`)
+          .join('')}
       </tbody>
     </table>
   ` : ''}
