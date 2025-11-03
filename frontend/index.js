@@ -1,14 +1,5 @@
 const $ = (id) => document.getElementById(id);
 
-async function loadModals() {
-  const container = document.getElementById('modals-container');
-  const modals = ['about', 'how-it-works', 'privacy', 'clear'];
-  for (const modal of modals) {
-    const res = await fetch(`modals/${modal}.html`);
-    container.innerHTML += await res.text();
-  }
-}
-
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const EMPTY_STATE_HTML = `
   <div class="empty-state">
@@ -18,82 +9,8 @@ const EMPTY_STATE_HTML = `
   </div>
 `;
 
-// Modal functions
-function openModal(modalId) {
-  const modal = document.getElementById(modalId);
-  modal.style.display = 'block';
-  document.body.style.overflow = 'hidden';
-
-  // Initialize pagination buttons
-  const pages = modal.querySelectorAll('.modal-page');
-  if (pages.length > 0) {
-    // Reset to first page
-    pages.forEach((page, index) => {
-      page.classList.toggle('active', index === 0);
-    });
-    updatePaginationInfo(modalId, 1, pages.length);
-  }
-}
-
-function closeModal(modalId) {
-  document.getElementById(modalId).style.display = 'none';
-  document.body.style.overflow = 'auto';
-}
-
-window.openModal = openModal;
-window.closeModal = closeModal;
-
-// Modal pagination functions
-function nextPage(modalId) {
-  const modal = document.getElementById(modalId);
-  const pages = modal.querySelectorAll('.modal-page');
-  const currentPage = Array.from(pages).findIndex(p => p.classList.contains('active'));
-
-  if (currentPage < pages.length - 1) {
-    pages[currentPage].classList.remove('active');
-    pages[currentPage + 1].classList.add('active');
-    updatePaginationInfo(modalId, currentPage + 2, pages.length);
-  }
-}
-
-function previousPage(modalId) {
-  const modal = document.getElementById(modalId);
-  const pages = modal.querySelectorAll('.modal-page');
-  const currentPage = Array.from(pages).findIndex(p => p.classList.contains('active'));
-
-  if (currentPage > 0) {
-    pages[currentPage].classList.remove('active');
-    pages[currentPage - 1].classList.add('active');
-    updatePaginationInfo(modalId, currentPage, pages.length);
-  }
-}
-
-function updatePaginationInfo(modalId, currentPage, totalPages) {
-  const modal = document.getElementById(modalId);
-  const paginationInfo = modal.querySelector('.pagination-info');
-  const currentPageSpan = paginationInfo.querySelector('.current-page');
-  const prevBtn = modal.querySelector('.prev-btn');
-  const nextBtn = modal.querySelector('.next-btn');
-
-  currentPageSpan.textContent = currentPage;
-
-  // Disable buttons at start/end
-  prevBtn.disabled = currentPage === 1;
-  nextBtn.disabled = currentPage === totalPages;
-}
-
-window.nextPage = nextPage;
-window.previousPage = previousPage;
-
-window.onclick = function(event) {
-  if (event.target.classList.contains('modal')) {
-    event.target.style.display = 'none';
-    document.body.style.overflow = 'auto';
-  }
-}
-
 async function init() {
-  await loadModals();
+  await window.loadModals();
 
   const fileInput = $('file');
   const textArea = $('text');
@@ -193,30 +110,33 @@ async function init() {
     checkInput();
   });
 
-  function checkInput() {
-    const hasFile = !!fileInput.files[0];
-    const hasText = textArea.value.trim().length > 0;
-
-    // Disable textarea if file is selected, disable file upload if text is entered
+  function updateInputAvailability(hasFile, hasText) {
     textArea.disabled = hasFile;
     uploadArea.style.pointerEvents = hasText ? 'none' : 'auto';
     uploadArea.style.opacity = hasText ? '0.5' : '1';
+  }
 
-    // Check if any analysis option is selected
-    const keywordAnalysisSelected = $('keynessCheck').checked;
-    const sentimentSelected = $('sentimentCheck').checked;
-    const keynessStatsSelected = $('keynessStatsCheck').checked;
-    const hasAnalysisOption = keywordAnalysisSelected || sentimentSelected || keynessStatsSelected;
+  function hasAnalysisSelected() {
+    return $('keynessCheck').checked || $('sentimentCheck').checked || $('keynessStatsCheck').checked;
+  }
 
-    // Show/hide analysis warning
-    const analysisWarning = $('analysisWarning');
-    const shouldShowWarning = (hasFile || hasText) && !hasAnalysisOption;
-    analysisWarning.style.display = shouldShowWarning ? 'block' : 'none';
+  function updateAnalysisWarning(hasInput, hasAnalysis) {
+    $('analysisWarning').style.display = hasInput && !hasAnalysis ? 'block' : 'none';
+  }
 
-    // If keyness stats is selected, corpus must be selected
-    const keynessCorpusValid = !keynessStatsSelected || $('corpusSelect').value.trim() !== '';
+  function isKeynessCorpusValid() {
+    return !$('keynessStatsCheck').checked || $('corpusSelect').value.trim() !== '';
+  }
 
-    analyzeBtn.disabled = !(hasFile || hasText) || !hasAnalysisOption || !keynessCorpusValid;
+  function checkInput() {
+    const hasFile = !!fileInput.files[0];
+    const hasText = textArea.value.trim().length > 0;
+    const hasInput = hasFile || hasText;
+    const hasAnalysis = hasAnalysisSelected();
+
+    updateInputAvailability(hasFile, hasText);
+    updateAnalysisWarning(hasInput, hasAnalysis);
+    analyzeBtn.disabled = !hasInput || !hasAnalysis || !isKeynessCorpusValid();
   }
 
   textArea.addEventListener('input', checkInput);
@@ -505,36 +425,5 @@ async function init() {
   // Export checkInput for use in keyness.js
   window.checkInput = checkInput;
 }
-
-// Utility functions
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-function toggleCardContent(event) {
-  // Find the closest result-card
-  const card = event.currentTarget.closest('.result-card');
-  const content = card.querySelector('.result-card-content');
-  const toggle = card.querySelector('.result-card-toggle');
-
-  // Toggle collapsed state
-  content.classList.toggle('collapsed');
-  toggle.classList.toggle('collapsed');
-}
-
-function toggleFormulas(event) {
-  const toggle = event.currentTarget;
-  const formulasSection = toggle.nextElementSibling;
-  const icon = toggle.querySelector('.formulas-toggle-icon');
-
-  // Toggle collapsed state
-  formulasSection.classList.toggle('collapsed');
-  icon.classList.toggle('rotated');
-}
-
-window.toggleCardContent = toggleCardContent;
-window.toggleFormulas = toggleFormulas;
 
 init();

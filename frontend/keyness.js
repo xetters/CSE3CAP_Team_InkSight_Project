@@ -199,7 +199,6 @@ function initKeynessChart(chartId, data) {
     },
     options: {
       indexAxis: 'y',
-      responsive: true,
       maintainAspectRatio: false,
       layout: {
         padding: {
@@ -209,9 +208,6 @@ function initKeynessChart(chartId, data) {
       },
       plugins: {
         legend: { display: false },
-        title: {
-          display: false
-        },
         tooltip: {
           enabled: false
         }
