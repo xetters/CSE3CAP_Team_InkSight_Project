@@ -12,7 +12,9 @@ CORPORA = {
     'brown': {
         'display_name': 'Brown Corpus',
         'simple_description': 'Balanced American English',
-        'full_description': 'Balanced corpus of American English across multiple genres',
+        'full_description': (
+            'Balanced corpus of American English across multiple genres'
+        ),
         'loader': brown.words
     },
     'gutenberg': {

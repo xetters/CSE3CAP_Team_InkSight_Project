@@ -25,9 +25,14 @@ def load_model(model_path=model_path):
         print(f"Loading FastText model from {model_path}", file=sys.stderr)
         return fasttext.load_model(model_path)
     else:
-        with open(fallback_path, "w", encoding="utf-8") as f: 
-            f.write("Natural Language Processing Text analysis and data mining Semantic understanding and relationship extraction Sentiment analysis and opinion mining Word embedding for vector representation")
-            
+        with open(fallback_path, "w", encoding="utf-8") as f:
+            f.write(
+                "Natural Language Processing Text analysis and data mining "
+                "Semantic understanding and relationship extraction "
+                "Sentiment analysis and opinion mining "
+                "Word embedding for vector representation"
+            )
+
         return fasttext.train_unsupervised(
             fallback_path,
             model='skipgram',
@@ -51,9 +56,10 @@ def get_word_vector(model, tokens):
 
 def cluster_words(vectors, tokens, max_clusters=15):
     """Cluster embeddings into semantic groups with dynamic cluster size"""
-    n_clusters = max(2, min(max_clusters, len(tokens) // 200))  # 1 cluster per 200 words
-    n_clusters = min(n_clusters, len(tokens))  # never more clusters than tokens
-    
+    # 1 cluster per 200 words
+    n_clusters = max(2, min(max_clusters, len(tokens) // 200))
+    n_clusters = min(n_clusters, len(tokens))
+
     kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=5)
     labels = kmeans.fit_predict(vectors)
 
@@ -65,7 +71,7 @@ def cluster_words(vectors, tokens, max_clusters=15):
         # Remove duplicates word entries
         unique_words = list(dict.fromkeys(cluster_tokens))
 
-        # Take top 10 nearest to centroid 
+        # Take top 10 nearest to centroid
         centroid = kmeans.cluster_centers_[i]
         distances = np.linalg.norm(vectors[cluster_indices] - centroid, axis=1)
         sorted_idx = np.argsort(distances)
@@ -93,13 +99,23 @@ def analyze_semantic(text: str) -> dict:
     tokens = tokenize(text)
 
     if not tokens:
-        return {"total_words": 0, "total_clusters": 0, "clusters": [], "top_clusters": []}
+        return {
+            "total_words": 0,
+            "total_clusters": 0,
+            "clusters": [],
+            "top_clusters": []
+        }
 
     model = load_model()
     vectors, valid_tokens = get_word_vector(model, tokens)
 
     if not valid_tokens:
-        return {"total_words": len(tokens), "total_clusters": 0, "clusters": [], "top_clusters": []}
+        return {
+            "total_words": len(tokens),
+            "total_clusters": 0,
+            "clusters": [],
+            "top_clusters": []
+        }
 
     clusters = cluster_words(vectors, valid_tokens)
 

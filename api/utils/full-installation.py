@@ -10,7 +10,9 @@ from pathlib import Path
 
 def install_python_requirements():
     requirements_path = Path(__file__).parent / "requirements.txt"
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", str(requirements_path)])
+    subprocess.check_call([
+        sys.executable, "-m", "pip", "install", "-r", str(requirements_path)
+    ])
 
 def download_nltk_data():
     setup_nltk_path = Path(__file__).parent / "setup_nltk.py"
