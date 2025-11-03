@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Analyze text to count words, find popular words, and estimate reading time."""
 
 import sys

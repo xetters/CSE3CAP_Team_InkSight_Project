@@ -7,7 +7,6 @@ names, descriptions, and a function to load the corpus words.
 """
 from nltk.corpus import brown, gutenberg, reuters, inaugural
 
-# Corpus metadata: (display_name, simple_description, full_description, loader_function)
 CORPORA = {
     'brown': {
         'display_name': 'Brown Corpus',

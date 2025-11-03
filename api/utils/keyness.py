@@ -86,7 +86,8 @@ def analyze_keyness(text, corpus_name):
             user_count + 0.5, corpus_count + 0.5, user_total, corpus_total
         )
 
-        if score >= 3.84:  # Only keep statistically significant keywords
+        # Only keep statistically significant keywords
+        if score >= 3.84:
             effect = freq_strength(
                 user_count + 0.5, corpus_count + 0.5, user_total, corpus_total
             )
