@@ -1,5 +1,4 @@
 import unittest
-import json
 import os
 import re
 from collections import Counter

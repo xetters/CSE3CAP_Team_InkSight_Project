@@ -58,6 +58,30 @@ Manually download from https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.
 
 ---
 
+## Backend testing
+First go to the directory
+```
+cd api/tests
+```
+The sample is located in the test_data folder, keep the test_text.txt name intact and change the content to your liking
+
+**To Run Backend Function Test**
+Dependencies:
+```
+numpy
+scikit-learn
+scipy
+statsmodels
+nltk
+```
+To run the test, use the command of the system you want to test
+```
+python test_analyze.py
+python test_semantic.py
+python test_keyness.py 
+```
+
+
 ## How to Use
 
 **1. Start the server:**
