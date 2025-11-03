@@ -28,6 +28,6 @@ window.onclick = (e) => {
     e.target.style.display = 'none';
     document.body.style.overflow = 'auto';
   }
-}
+};
 
 window.loadModals = loadModals;

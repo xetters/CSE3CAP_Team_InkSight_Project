@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Analyze text to count words, find popular words, and estimate reading time."""
 
 import sys
@@ -26,7 +27,10 @@ avg_sentence_length = round(total / sentence_count, 1) if sentence_count > 0 els
 
 # Estimate reading time (assumes 200 words per minute)
 minutes = total / 200
-reading_time = {"value": int(minutes * 60), "unit": "seconds"} if minutes < 1 else {"value": round(minutes, 1), "unit": "minutes"}
+if minutes < 1:
+    reading_time = {"value": int(minutes * 60), "unit": "seconds"}
+else:
+    reading_time = {"value": round(minutes, 1), "unit": "minutes"}
 
 # Package everything into a result dictionary (good for json conversion)
 result = {
@@ -37,5 +41,5 @@ result = {
     "reading_time": reading_time
 }
 
-# Output the result disctionary as JSON
+# Output the result dictionary as JSON
 print(json.dumps(result, ensure_ascii=False))

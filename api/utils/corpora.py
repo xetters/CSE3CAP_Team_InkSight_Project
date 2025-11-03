@@ -1,12 +1,19 @@
 #!/usr/bin/env python3
+"""Reference corpus metadata for keyness analysis.
+
+Provides metadata and loader functions for NLTK corpora used in
+keyness statistics calculations. Each corpus entry includes display
+names, descriptions, and a function to load the corpus words.
+"""
 from nltk.corpus import brown, gutenberg, reuters, inaugural
 
-# Corpus metadata: (display_name, simple_description, full_description, loader_function)
 CORPORA = {
     'brown': {
         'display_name': 'Brown Corpus',
         'simple_description': 'Balanced American English',
-        'full_description': 'Balanced corpus of American English across multiple genres',
+        'full_description': (
+            'Balanced corpus of American English across multiple genres'
+        ),
         'loader': brown.words
     },
     'gutenberg': {

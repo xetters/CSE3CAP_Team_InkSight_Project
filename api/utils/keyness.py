@@ -7,27 +7,53 @@ from scipy.stats import chi2_contingency
 from corpora import CORPORA
 
 def tokenize(text):
-    """Takes text as argument. Splits into normalized words. Returns list of lowercase words (3+ letters only)."""
+    """Takes text as argument. Splits into normalized words.
+
+    Returns list of lowercase words (3+ letters only).
+    """
     return [w.lower() for w in word_tokenize(text) if w.isalpha() and len(w) >= 3]
 
 def test_frequency(user_count, corpus_count, user_total, corpus_total):
-    """Takes word counts and totals. Calculates statistical difference using chi-squared test. Returns chi-squared score."""
+    """Takes word counts and totals. Calculates statistical difference.
+
+    Uses chi-squared test. Returns chi-squared score.
+    """
     if user_count <= 0 or corpus_count <= 0:
         return 0.0
-    return chi2_contingency([[user_count, corpus_count], [user_total - user_count, corpus_total - corpus_count]])[0]
+    contingency_table = [
+        [user_count, corpus_count],
+        [user_total - user_count, corpus_total - corpus_count]
+    ]
+    return chi2_contingency(contingency_table)[0]
 
 def freq_strength(user_count, corpus_count, user_total, corpus_total):
-    """Takes word counts and totals. Calculates magnitude of difference using Cohen's h. Returns effect size score."""
+    """Takes word counts and totals. Calculates magnitude of difference.
+
+    Uses Cohen's h. Returns effect size score.
+    """
     user_prop = user_count / user_total if user_total > 0 else 0
     corpus_prop = corpus_count / corpus_total if corpus_total > 0 else 0
     return cohen_h(user_prop, corpus_prop)
 
 def give_star_value(score):
-    """Takes statistical score. Converts to star markers based on thresholds. Returns stars (*, **, ***)."""
-    return '***' if score >= 10.83 else '**' if score >= 6.63 else '*' if score >= 3.84 else ''
+    """Takes statistical score. Converts to star markers based on thresholds.
+
+    Returns stars (*, **, ***).
+    """
+    if score >= 10.83:
+        return '***'
+    elif score >= 6.63:
+        return '**'
+    elif score >= 3.84:
+        return '*'
+    else:
+        return ''
 
 def analyze_keyness(text, corpus_name):
-    """Takes text and corpus name. Identifies distinctive words by comparing frequencies. Returns dict with keywords and stats."""
+    """Takes text and corpus name. Identifies distinctive words.
+
+    Compares frequencies. Returns dict with keywords and stats.
+    """
     if corpus_name not in CORPORA:
         raise ValueError(f"Unknown corpus: {corpus_name}")
 
@@ -38,7 +64,10 @@ def analyze_keyness(text, corpus_name):
 
     # Load and tokenize corpus
     corpus_data = CORPORA[corpus_name]
-    corpus_tokens = [w.lower() for w in corpus_data['loader']() if w.isalpha() and len(w) >= 3]
+    corpus_words = corpus_data['loader']()
+    corpus_tokens = [
+        w.lower() for w in corpus_words if w.isalpha() and len(w) >= 3
+    ]
     corpus_freq = FreqDist(corpus_tokens)
     corpus_total = len(corpus_tokens)
 
@@ -53,10 +82,15 @@ def analyze_keyness(text, corpus_name):
         corpus_count = corpus_freq.get(word, 0)
 
         # Apply smoothing to avoid zero-count errors
-        score = test_frequency(user_count + 0.5, corpus_count + 0.5, user_total, corpus_total)
+        score = test_frequency(
+            user_count + 0.5, corpus_count + 0.5, user_total, corpus_total
+        )
 
-        if score >= 3.84:  # Only keep statistically significant keywords
-            effect = freq_strength(user_count + 0.5, corpus_count + 0.5, user_total, corpus_total)
+        # Only keep statistically significant keywords
+        if score >= 3.84:
+            effect = freq_strength(
+                user_count + 0.5, corpus_count + 0.5, user_total, corpus_total
+            )
 
             keywords.append({
                 'word': word,

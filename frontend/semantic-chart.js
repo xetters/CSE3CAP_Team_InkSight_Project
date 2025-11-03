@@ -3,9 +3,9 @@
 // Simple hash function to generate position from word string
 function hashWord(word) {
   let hash = 0;
-  for (let i = 0; i < word.length; i++) {
-    hash = ((hash << 5) - hash) + word.charCodeAt(i);
-    hash = hash & hash;
+  for (let i = 0; i < word.length; i += 1) {
+    hash = ((hash << 5) - hash) + word.charCodeAt(i); // eslint-disable-line no-bitwise
+    hash &= hash; // eslint-disable-line no-bitwise
   }
   return hash;
 }
@@ -22,7 +22,7 @@ function initSemanticChart(chartId, data) {
     const points = cluster.words.map((word) => {
       const hash = hashWord(word);
       const x = (hash % 200) - 100;
-      const y = ((hash >> 8) % 200) - 100;
+      const y = ((hash >> 8) % 200) - 100; // eslint-disable-line no-bitwise
 
       return { x, y, word };
     });
@@ -34,12 +34,13 @@ function initSemanticChart(chartId, data) {
       label: `Cluster ${clusterIndex + 1}`,
       data: points,
       backgroundColor: color,
-      pointRadius: 0
+      pointRadius: 0,
     };
   });
 
   const ctx = canvas.getContext('2d');
 
+  // eslint-disable-next-line no-unused-vars
   const chart = new Chart(ctx, {
     type: 'scatter',
     data: { datasets },
@@ -48,30 +49,30 @@ function initSemanticChart(chartId, data) {
       maintainAspectRatio: false,
       plugins: {
         legend: { display: false },
-        tooltip: { enabled: false }
+        tooltip: { enabled: false },
       },
       scales: {
         x: { display: false },
-        y: { display: false }
-      }
+        y: { display: false },
+      },
     },
     plugins: [{
-      afterDatasetsDraw: function(chart) {
-        const ctx = chart.ctx;
-        ctx.font = '11px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
+      afterDatasetsDraw(chartInstance) {
+        const { ctx: context } = chartInstance;
+        context.font = '11px sans-serif';
+        context.textAlign = 'center';
+        context.textBaseline = 'middle';
 
-        chart.data.datasets.forEach((dataset, i) => {
-          const meta = chart.getDatasetMeta(i);
+        chartInstance.data.datasets.forEach((dataset, i) => {
+          const meta = chartInstance.getDatasetMeta(i);
           meta.data.forEach((point, index) => {
-            const word = dataset.data[index].word;
-            ctx.fillStyle = dataset.backgroundColor;
-            ctx.fillText(word, point.x, point.y);
+            const { word } = dataset.data[index];
+            context.fillStyle = dataset.backgroundColor;
+            context.fillText(word, point.x, point.y);
           });
         });
-      }
-    }]
+      },
+    }],
   });
 }
 
