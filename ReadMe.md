@@ -1,129 +1,103 @@
-# Three Muskateers - InkSight NLP Project
+# InkSight
 
-A text analysis and NLP web application that uses Node.js/Express for the backend and Python + FastText?* for text processing.
+**"Tell me something I don't know"**
+A Privacy-Focused NLP Tool for Creative Writers
+
+InkSight is a text analysis tool that helps you understand your writing through word frequency analysis, keyness statistics, and semantic clustering. All processing happens locally on your computer - no cloud uploads, no external servers, no data storage.
 
 ---
 
-## Prerequisites
+## Description
 
-Ensure the following software dependencies are installed on your system:
+InkSight provides data-based feedback on themes, word choice, and writing habits using local NLP processing with NLTK and FastText libraries. Upload a document (.txt, .docx, or .md up to 5 MB) and get instant insights about your distinctive vocabulary and hidden patterns.
 
-- **Node.js**: v18 or higher
-- **npm**: v9 or higher  
-- **Python**: exactly v3.11.9 - this is to support FastTest model
-
-You can verify your installations by running:
-```bash
-node --version
-npm --version
-python --version
-```
+**Key Features:**
+- **Word Frequency Analysis** - Identify overused words and vocabulary patterns
+- **Keyness Statistics** - Compare your writing to reference corpora (news, literature, speeches)
+- **Semantic Clustering** - Discover related words and themes using pretrained AI models
+- **Privacy-First** - All processing local, in-memory only, zero logging
+- **Offline Capable** - NLTK and FastText models run locally
 
 ---
 
 ## Installation
 
-1. **Clone or download** this repository to your local machine
+**Prerequisites:**
+- Node.js v18+
+- npm v9+
+- Python v3.11.9
+- 2 GB free disk space
 
-2. **Install Node.js dependencies** in the root directory:
-   ```bash
-   npm install
-   ```
-
-3. **Install dependencies** in the `api` subfolder:
-   ```bash
-   cd api
-   npm install
-   cd ..
-   ```
-
-4. **Install Python dependencies**:
-   ```bash
-   pip install -r api/utils/requirements.txt
-   ```
-
-5. **Download NLTK data**:
-   ```bash
-   python api/utils/setup_nltk.py
-   ```
-
-## FastText pre-train model Installation
-   You can run these command or manually download at the link: https://fasttext.cc/docs/en/crawl-vectors.html
-
-   **Download the model**
-   First download the python package
-   ```
-   git clone https://github.com/facebookresearch/fastText.git
-   cd fastText
-   pip install .
-   # or :
-   python setup.py install
-   ```
-   and then
-   ```
-   python download_model.py en
-   ```
-   Move the model into the "models" folder
-
-   This is from the FastText documentation website, you can find other models or check for yourself at the mentioned link
-   Model used is cc.en.300.bin (English language)
-
-   **Semantic cluster analysis and NLP processing libraries**
-   ```
-   pip install fasttext-wheel scikit-learn numpy gensim statsmodels nltk scipy
-   ```
-   **Adapt the model dimension**
-   ```
-   cd fastText
-   python reduce_model.py [Path to the model] cc.en.300.bin [desired dimension]
-   ```
-   Example, to get vectors of dimension 100:
-   ```
-   python reduce_model.py [Path to the model] cc.en.300.bin 100
-   ```
-   If you change the model dimension you also need to update the model new information in api/utils/semantic.py  
-
----
-
-## Running the Application
-
-1. **Start the server** from the root directory:
-   ```bash
-   node api/app.js
-   ```
-
-2. **Open your browser** and navigate to:
-   ```
-   http://localhost:3000
-   ```
-
-3. **Upload a file** (`.txt`, `.docx`, `.md`, or `.odt`) to analyze:
-   - Word frequency and insights
-   - Sentiment analysis (dummy implementation - replace with FastText later)
-   - DOCX files are fully supported with text extraction
-   - ODT support is partial (requires additional library)
-
----
-
-## Notes
-
-- The application runs on **port 3000** by default
-- Python analysis is performed via a spawned subprocess, so Python must be accessible in your system PATH
-- File uploads are handled in-memory using `multer`
-- Text extraction from DOCX files is handled by the `mammoth` library
-
----
-
-## Quick Setup (One Command)
-
-If you have Node.js and Python installed, install all dependencies with a single command:
-
+**Quick Setup (Recommended):**
 ```bash
-npm run full-setup
+npm run full-setup-with-fasttext
 ```
 
-This command will:
-- Install root dependencies
-- Install API dependencies
-- Install frontend dependencies
-- Install Python dependencies
+**Manual Setup:**
+```bash
+# Install Node.js dependencies
+npm install
+cd api && npm install && cd ..
+
+# Install Python dependencies
+pip install -r api/utils/requirements.txt
+
+# Download NLTK data
+python api/utils/setup_nltk.py
+
+# Download FastText model (for Semantic Clustering)
+git clone https://github.com/facebookresearch/fastText.git
+cd fastText
+pip install .
+python download_model.py en
+# Move cc.en.300.bin to models/ directory in project root
+```
+
+**Alternative FastText Download:**
+Manually download from https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.en.300.bin.gz and extract to `models/` directory.
+
+---
+
+## How to Use
+
+**1. Start the server:**
+```bash
+npm run start-api
+```
+
+**2. Open your browser:**
+```
+http://localhost:3000
+```
+
+**3. Upload a file:**
+Click the upload area or drag and drop a file (.txt, .docx, or .md, max 5 MB)
+
+**4. Select analysis types:**
+- **Word Analysis** - Displays word frequency and basic statistics
+- **Keyness Statistics** - Identifies distinctive words (select a reference corpus)
+- **Semantic Analysis** - Groups related words by meaning
+
+**5. Click "Analyze Text"**
+
+**6. Download results:**
+Click "Download All" to export a complete HTML report, or download individual sections
+
+**7. Clear data:**
+Click "Clear" or refresh the page to remove results
+
+---
+
+## Credits
+
+**Team Three Musketeers**
+La Trobe CSE3CAP Project
+
+- Micah Crossett (18122181)
+- Montaka Khan (21472447)
+- Quan Ngoc Minh Vuong (22495054)
+
+**Built with:**
+- Node.js/Express backend
+- Python NLP processing (NLTK, FastText)
+- Vanilla JavaScript frontend

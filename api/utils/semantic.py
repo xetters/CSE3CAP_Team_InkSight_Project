@@ -15,12 +15,26 @@ model_path = os.path.join(pj_root, 'models', 'cc.en.300.bin')
 fallback_path = os.path.join(script_dir,'fallback.txt')
 
 def tokenize(text: str) -> list[str]:
-    """Convert text to lowercase words."""
+    """Convert text to lowercase words.
+
+    Args:
+        text: Input text string
+
+    Returns:
+        List of lowercase words (3+ letters only)
+    """
     tokens = re.findall(r'\b[a-zA-Z]{3,}\b', text.lower())
     return tokens
 
 def load_model(model_path=model_path):
-    """Load FastText model. Train fallback model if not found."""
+    """Load FastText model. Train fallback model if not found.
+
+    Args:
+        model_path: Path to FastText .bin file
+
+    Returns:
+        Loaded FastText model object
+    """
     if os.path.exists(model_path):
         print(f"Loading FastText model from {model_path}", file=sys.stderr)
         return fasttext.load_model(model_path)
@@ -42,7 +56,15 @@ def load_model(model_path=model_path):
         )
 
 def get_word_vector(model, tokens):
-    """Get average word vector for given tokens."""
+    """Get average word vector for given tokens.
+
+    Args:
+        model: FastText model object
+        tokens: List of word tokens
+
+    Returns:
+        Tuple of (numpy array of vectors, list of valid tokens)
+    """
     vectors = []
     valid_tokens = []
     for token in tokens:
@@ -55,7 +77,16 @@ def get_word_vector(model, tokens):
     return np.array(vectors), valid_tokens
 
 def cluster_words(vectors, tokens, max_clusters=15):
-    """Cluster embeddings into semantic groups with dynamic cluster size"""
+    """Cluster embeddings into semantic groups with dynamic cluster size.
+
+    Args:
+        vectors: Numpy array of word embeddings
+        tokens: List of word tokens
+        max_clusters: Maximum number of clusters (default 15)
+
+    Returns:
+        List of cluster dicts with label, word_count, and top words
+    """
     # 1 cluster per 200 words
     n_clusters = max(2, min(max_clusters, len(tokens) // 200))
     n_clusters = min(n_clusters, len(tokens))
@@ -95,7 +126,14 @@ def cluster_words(vectors, tokens, max_clusters=15):
     return clusters
 
 def analyze_semantic(text: str) -> dict:
-    """Analyze semantic clusters in the text."""
+    """Analyze semantic clusters in the text.
+
+    Args:
+        text: Input text to analyze
+
+    Returns:
+        Dict with total_words, total_clusters, clusters, and top_clusters
+    """
     tokens = tokenize(text)
 
     if not tokens:
