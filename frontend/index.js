@@ -313,68 +313,30 @@ async function init() {
   });
 
   // Display results
+  function createResultCard(title, section, content) {
+    return `<div class="result-card">
+      <div class="result-card-header" onclick="toggleCardContent(event)">
+        <h3>${title}</h3>
+        <div class="card-actions">
+          <button class="section-download" onclick="event.stopPropagation(); downloadSection('${section}')">Download</button>
+          <div class="result-card-toggle">▼</div>
+        </div>
+      </div>
+      <div class="result-card-content">${content}</div>
+    </div>`;
+  }
+
   function displayResults(wordData, sentData, keynessData, options) {
     downloadBtn.style.display = 'inline-block';
     clearBtn.style.display = 'inline-block';
 
-    let html = '';
+    const cards = [
+      options.keyness && wordData && createResultCard('Word Analysis - Your Distinctive Words', 'word-analysis', renderWordAnalysis(wordData)),
+      options.keynessStats && keynessData && createResultCard('Keyness Statistics', 'keyness-stats', renderKeynessStats(keynessData)),
+      options.sentiment && sentData && createResultCard('Semantic Analysis', 'sentiment', renderSentiment(sentData))
+    ].filter(Boolean);
 
-    if (options.keyness && wordData) {
-      html += `
-        <div class="result-card">
-          <div class="result-card-header" onclick="toggleCardContent(event)">
-            <h3>Word Analysis - Your Distinctive Words</h3>
-            <div class="card-actions">
-              <button class="section-download" onclick="event.stopPropagation(); downloadSection('word-analysis')">Download</button>
-              <div class="result-card-toggle">▼</div>
-            </div>
-          </div>
-          <div class="result-card-content">
-            ${renderWordAnalysis(wordData)}
-          </div>
-        </div>
-      `;
-    }
-
-    if (options.keynessStats && keynessData) {
-      html += `
-        <div class="result-card">
-          <div class="result-card-header" onclick="toggleCardContent(event)">
-            <h3>Keyness Statistics</h3>
-            <div class="card-actions">
-              <button class="section-download" onclick="event.stopPropagation(); downloadSection('keyness-stats')">Download</button>
-              <div class="result-card-toggle">▼</div>
-            </div>
-          </div>
-          <div class="result-card-content">
-            ${renderKeynessStats(keynessData)}
-          </div>
-        </div>
-      `;
-    }
-
-    if (options.sentiment && sentData) {
-      html += `
-        <div class="result-card">
-          <div class="result-card-header" onclick="toggleCardContent(event)">
-            <h3>Semantic Analysis</h3>
-            <div class="card-actions">
-              <button class="section-download" onclick="event.stopPropagation(); downloadSection('sentiment')">Download</button>
-              <div class="result-card-toggle">▼</div>
-            </div>
-          </div>
-          <div class="result-card-content">
-            ${renderSentiment(sentData)}
-          </div>
-        </div>
-      `;
-    }
-
-    if (!html) {
-      html = '<div class="empty-state"><p>No results to display. Please select at least one analysis option.</p></div>';
-    }
-
-    resultsDiv.innerHTML = html;
+    resultsDiv.innerHTML = cards.length ? cards.join('') : '<div class="empty-state"><p>No results to display. Please select at least one analysis option.</p></div>';
   }
 
   function renderWordAnalysis(data) {
