@@ -48,7 +48,7 @@ async function handleSentiment(req, res) {
   if (!req.file) return res.status(400).json({ error: 'No file' });
   try {
     const text = await extractText(req.file);
-    const result = await runPythonScript('sentiment.py', text);
+    const result = await runPythonScript('semantic.py', text);
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
