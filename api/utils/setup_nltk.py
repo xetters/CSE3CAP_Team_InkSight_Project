@@ -12,9 +12,9 @@ for package in packages:
     try:
         print(f"Downloading '{package}'...")
         nltk.download(package, quiet=False)
-        print(f"'{package}' downloaded successfully\n")
+        print(f"[OK] '{package}' downloaded successfully\n")
     except Exception as e:
-        print(f"Error downloading '{package}': {e}\n")
+        print(f"[ERROR] Failed to download '{package}': {e}\n")
         exit(1)
 
 print("=" * 60)

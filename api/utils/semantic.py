@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # api/utils/semantic.py
 import os
 import sys
@@ -6,7 +7,6 @@ import re
 import fasttext
 import numpy as np
 from sklearn.cluster import KMeans
-from sklearn.decomposition import PCA
 
 #change model here
 script_dir = os.path.dirname(os.path.abspath(__file__)) + '/../../models/cc.en.300.bin'
@@ -29,10 +29,10 @@ def load_model(model_path=model_path):
             f.write("Natural Language Processing Text analysis and data mining Semantic understanding and relationship extraction Sentiment analysis and opinion mining Word embedding for vector representation")
             
         return fasttext.train_unsupervised(
-            fallback_path, 
-            model='skipgram', 
-            dim=50, # changed dimension parameter
-            epoch=5, # changed epoch parameter
+            fallback_path,
+            model='skipgram',
+            dim=50,
+            epoch=5,
             minCount=1
         )
 
@@ -114,12 +114,12 @@ def analyze_semantic(text: str) -> dict:
 text = sys.stdin.read() or ""
 result = analyze_semantic(text)
 output = {
-    "overall_sentiment": "semantic_clusters",  #
+    "overall_sentiment": "semantic_clusters",
     "semantic_summary": {
         "total_words": result.get("total_words", 0),
-        "total_clusters": result.get("total_clusters", 0), #cluster count
-        "top_clusters": result.get("top_clusters", []), #top 4 clusters
-        "clusters": result.get("clusters", []) #all clusters
+        "total_clusters": result.get("total_clusters", 0),
+        "top_clusters": result.get("top_clusters", []),
+        "clusters": result.get("clusters", [])
     }
 }
 print(json.dumps(output, ensure_ascii=False))
