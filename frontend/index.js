@@ -93,7 +93,7 @@ async function init() {
   uploadArea.addEventListener('drop', (e) => {
     e.preventDefault();
     uploadArea.classList.remove('dragover');
-    const files = e.dataTransfer.files;
+    const { files } = e.dataTransfer;
     if (files.length > 0) {
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(files[0]);
@@ -173,7 +173,7 @@ async function init() {
     const options = {
       keyness: $('keynessCheck').checked,
       sentiment: $('sentimentCheck').checked,
-      keynessStats: keynessStatsCheck.checked
+      keynessStats: keynessStatsCheck.checked,
     };
 
     analyzeBtn.disabled = true;
@@ -189,7 +189,7 @@ async function init() {
       if (options.keyness) {
         const res = await fetch('/api/analyze-file', {
           method: 'POST',
-          body: createFormData()
+          body: createFormData(),
         });
 
         if (!res.ok) throw new Error('Word analysis failed');
@@ -200,13 +200,13 @@ async function init() {
       if (options.sentiment) {
         const sentRes = await fetch('/api/sentiment', {
           method: 'POST',
-          body: createFormData()
+          body: createFormData(),
         });
 
         if (!sentRes.ok) throw new Error('Semantic analysis failed');
 
-        sentData = await sentRes.json(); 
-        setSentimentData(sentData);       
+        sentData = await sentRes.json();
+        setSentimentData(sentData);
       }
 
       if (options.keynessStats) {
@@ -218,7 +218,6 @@ async function init() {
 
       // Show collapse button after successful analysis
       uploadCollapseBtn.style.display = 'inline-block';
-
     } catch (err) {
       resultsDiv.innerHTML = `<div class="error-message">Error: ${err.message}</div>`;
     } finally {
@@ -249,7 +248,7 @@ async function init() {
     const cards = [
       options.keyness && wordData && createResultCard('Word Analysis - Your Distinctive Words', 'word-analysis', renderWordAnalysis(wordData)),
       options.keynessStats && keynessData && createResultCard('Keyness Statistics', 'keyness-stats', renderKeynessStats(keynessData)),
-      options.sentiment && sentData && createResultCard('Semantic Analysis', 'sentiment', renderSentiment(sentData))
+      options.sentiment && sentData && createResultCard('Semantic Analysis', 'sentiment', renderSentiment(sentData)),
     ].filter(Boolean);
 
     resultsDiv.innerHTML = cards.length ? cards.join('') : '<div class="empty-state"><p>No results to display. Please select at least one analysis option.</p></div>';
@@ -257,7 +256,7 @@ async function init() {
 
   function renderWordAnalysis(data) {
     const rows = (data.top || [])
-      .map(w => `<tr><td>${escapeHtml(w.w)}</td><td>${w.n}</td></tr>`)
+      .map((w) => `<tr><td>${escapeHtml(w.w)}</td><td>${w.n}</td></tr>`)
       .join('');
 
     const readingTimeValue = data.reading_time?.value ?? 0;
@@ -316,14 +315,13 @@ async function init() {
     }
 
     const summary = data.semantic_summary;
-    const clusters = summary.clusters || [];
     const topClusters = summary.top_clusters || [];
-    const chartId = 'semanticChart-' + Date.now();
+    const chartId = `semanticChart-${Date.now()}`;
 
     function formatClusterName(cluster) {
       if (cluster.theme) return cluster.theme;
       if (cluster.words && cluster.words.length > 0) return cluster.words[0];
-      return cluster.label || "Unnamed Cluster";
+      return cluster.label || 'Unnamed Cluster';
     }
 
     let html = `
@@ -342,7 +340,7 @@ async function init() {
         <ul class="semantic-list">
     `;
 
-    topClusters.forEach(cluster => {
+    topClusters.forEach((cluster) => {
       html += `
         <li>
           <strong>${formatClusterName(cluster)}</strong> — ${cluster.word_count ?? cluster.words.length} related words

@@ -6,10 +6,8 @@ async function loadCorpora() {
   try {
     const res = await fetch('/api/corpora');
     const corpora = await res.json();
-    corpusSelect.innerHTML = '<option value="">Select a corpus...</option>' +
-      corpora.map(c =>
-        `<option value="${c.name}">${c.display_name} - ${c.description}</option>`
-      ).join('');
+    corpusSelect.innerHTML = `<option value="">Select a corpus...</option>${
+      corpora.map((c) => `<option value="${c.name}">${c.display_name} - ${c.description}</option>`).join('')}`;
   } catch (err) {
     corpusSelect.innerHTML = '<option value="">Error loading corpora</option>';
   }
@@ -44,10 +42,10 @@ async function analyzeKeyness(formData, corpus) {
   formData.append('corpus', corpus);
   const res = await fetch('/api/keyness-stats', {
     method: 'POST',
-    body: formData
+    body: formData,
   });
   if (res.ok) {
-    return await res.json();
+    return res.json();
   }
   throw new Error('Keyness analysis failed');
 }
@@ -58,17 +56,19 @@ function renderKeynessStats(data) {
     return '<p>No keyness data available</p>';
   }
 
-  const chartId = 'keynessChart-' + Date.now();
+  const chartId = `keynessChart-${Date.now()}`;
 
   // Calculate insights
-  const overRep = data.keywords.filter(k => k.effect_size > 0).sort((a, b) => b.effect_size - a.effect_size);
-  const underRep = data.keywords.filter(k => k.effect_size < 0).sort((a, b) => a.effect_size - b.effect_size);
+  const overRep = data.keywords.filter((k) => k.effect_size > 0)
+    .sort((a, b) => b.effect_size - a.effect_size);
+  const underRep = data.keywords.filter((k) => k.effect_size < 0)
+    .sort((a, b) => a.effect_size - b.effect_size);
   const top3Over = overRep.slice(0, 3);
   const top3Under = underRep.slice(0, 3);
 
-  const veryHigh = data.keywords.filter(k => k.significance === "***").length;
-  const high = data.keywords.filter(k => k.significance === "**").length;
-  const moderate = data.keywords.filter(k => k.significance === "*").length;
+  const veryHigh = data.keywords.filter((k) => k.significance === '***').length;
+  const high = data.keywords.filter((k) => k.significance === '**').length;
+  const moderate = data.keywords.filter((k) => k.significance === '*').length;
 
   const html = `
     <div class="analysis-content">
@@ -95,8 +95,8 @@ function renderKeynessStats(data) {
 
       <div class="info-box info-box-neutral">
         <p><strong>Most Distinctive Words:</strong><br>
-        <strong>Over-represented in your text:</strong> ${top3Over.map(k => `"${k.word}"`).join(", ") || "None"}<br>
-        <strong>Under-represented in your text:</strong> ${top3Under.map(k => `"${k.word}"`).join(", ") || "None"}</p>
+        <strong>Over-represented in your text:</strong> ${top3Over.map((k) => `"${k.word}"`).join(', ') || 'None'}<br>
+        <strong>Under-represented in your text:</strong> ${top3Under.map((k) => `"${k.word}"`).join(', ') || 'None'}</p>
       </div>
 
       <h4>Keyness Comparison</h4>
@@ -143,30 +143,27 @@ function renderKeynessStats(data) {
 
 // Initialize keyness chart
 function initKeynessChart(chartId, data) {
-  const negativeKeywords = data.keywords.filter(k => k.effect_size < 0);
-  const positiveKeywords = data.keywords.filter(k => k.effect_size > 0).reverse();
+  const negativeKeywords = data.keywords.filter((k) => k.effect_size < 0);
+  const positiveKeywords = data.keywords.filter((k) => k.effect_size > 0).reverse();
 
   // Limit to top 15 from each side to prevent chart overflow
   const topNegative = negativeKeywords.slice(0, 15);
   const topPositive = positiveKeywords.slice(0, 15);
   const allKeywords = [...topNegative, ...topPositive];
 
-  const labels = allKeywords.map(k => `${k.word} ${k.significance}`);
-  const chartData = allKeywords.map(k => k.effect_size);
+  const labels = allKeywords.map((k) => `${k.word} ${k.significance}`);
+  const chartData = allKeywords.map((k) => k.effect_size);
 
-  const backgroundColors = allKeywords.map(k => {
+  const backgroundColors = allKeywords.map((k) => {
     if (k.effect_size > 0) {
       const intensity = Math.min(k.effect_size / 5, 1);
       return `rgba(59, 130, 246, ${0.4 + intensity * 0.4})`;
-    } else {
-      const intensity = Math.min(Math.abs(k.effect_size) / 5, 1);
-      return `rgba(34, 197, 94, ${0.4 + intensity * 0.4})`;
     }
+    const intensity = Math.min(Math.abs(k.effect_size) / 5, 1);
+    return `rgba(34, 197, 94, ${0.4 + intensity * 0.4})`;
   });
 
-  const borderColors = allKeywords.map(k =>
-    k.effect_size > 0 ? 'rgba(37, 99, 235, 1)' : 'rgba(22, 163, 74, 1)'
-  );
+  const borderColors = allKeywords.map((k) => (k.effect_size > 0 ? 'rgba(37, 99, 235, 1)' : 'rgba(22, 163, 74, 1)'));
 
   const canvas = document.getElementById(chartId);
   if (!canvas) {
@@ -185,17 +182,18 @@ function initKeynessChart(chartId, data) {
     return;
   }
 
+  // eslint-disable-next-line no-new
   new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: labels,
+      labels,
       datasets: [{
         label: 'Effect Size',
         data: chartData,
         backgroundColor: backgroundColors,
         borderColor: borderColors,
-        borderWidth: 1
-      }]
+        borderWidth: 1,
+      }],
     },
     options: {
       indexAxis: 'y',
@@ -203,28 +201,28 @@ function initKeynessChart(chartId, data) {
       layout: {
         padding: {
           left: 10,
-          right: 10
-        }
+          right: 10,
+        },
       },
       plugins: {
         legend: { display: false },
         tooltip: {
-          enabled: false
-        }
+          enabled: false,
+        },
       },
       scales: {
         x: {
           title: { display: true, text: 'Effect Size', font: { size: 12 } },
-          grid: { color: '#e5e7eb' }
+          grid: { color: '#e5e7eb' },
         },
         y: {
           ticks: {
-            font: { size: 11 }
+            font: { size: 11 },
           },
-          grid: { display: false }
-        }
-      }
-    }
+          grid: { display: false },
+        },
+      },
+    },
   });
 }
 

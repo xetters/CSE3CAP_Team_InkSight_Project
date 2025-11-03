@@ -4,24 +4,24 @@
 async function analyzeSemantic(formData) {
   const res = await fetch('/api/sentiment', {
     method: 'POST',
-    body: formData
+    body: formData,
   });
 
   if (!res.ok) throw new Error('Semantic analysis failed');
 
-  return await res.json();
+  return res.json();
 }
 
 // Render semantic cluster results
 function renderSemantic(data) {
   if (!data.semantic_summary) {
-    return `<p>No semantic data returned</p>`;
+    return '<p>No semantic data returned</p>';
   }
 
   const summary = data.semantic_summary;
-  const chartId = 'semanticChart-' + Date.now();
+  const chartId = `semanticChart-${Date.now()}`;
 
-  let html = `
+  const html = `
   <div class="analysis-content">
 
     <div class="info-box">
@@ -37,12 +37,12 @@ function renderSemantic(data) {
 
     <h4>Top Clusters</h4>
     <ul class="cluster-list">
-      ${summary.top_clusters.map(cluster => `
+      ${summary.top_clusters.map((cluster) => `
         <li class="cluster-item">
           <strong>${cluster.label}</strong><br>
-          ${cluster.words.join(", ")}
+          ${cluster.words.join(', ')}
         </li>
-      `).join("")}
+      `).join('')}
     </ul>
   </div>`;
 
