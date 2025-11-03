@@ -6,7 +6,7 @@ from collections import Counter
 # Mocking necessary components to avoid installation headaches for a simple structural test
 # Real functions would use scipy.stats, statsmodels, and NLTK FreqDist
 
-# --- Utility Function to Load Test Data ---
+#Load Test Data
 
 def load_test_file(filename="test_text.txt"):
     """Reads the content of a text file from the test_data directory."""
@@ -19,12 +19,12 @@ def load_test_file(filename="test_text.txt"):
     with open(file_path, 'r', encoding='utf-8') as f:
         return f.read()
 
-# --- Mocked Core Keyness Function ---
+#Core Keyness Function
 def analyze_keyness(user_text, corpus_name):
     """Mocks the keyness calculation to ensure output structure is valid."""
     tokens = re.findall(r'\b[a-zA-Z]{3,}\b', user_text.lower())
     
-    # Static mock data representative of a successful analysis
+    #Static mock data representative of a successful analysis
     return {
         'total_words': len(tokens),
         'unique_words': len(set(tokens)),

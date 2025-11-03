@@ -4,7 +4,7 @@ import re
 import os
 from sklearn.cluster import KMeans
 
-# --- Utility Function to Load Test Data ---
+#Load Test Data
 
 def load_test_file(filename="test_text.txt"):
     """Reads the content of a text file from the test_data directory."""
@@ -17,7 +17,7 @@ def load_test_file(filename="test_text.txt"):
     with open(file_path, 'r', encoding='utf-8') as f:
         return f.read()
 
-# --- Mocked Core Functions (Simulated execution) ---
+#Mocked Core Functions
 
 def tokenize(text: str) -> list[str]:
     return re.findall(r'\b[a-zA-Z]{3,}\b', text.lower())
@@ -74,7 +74,7 @@ class TestSemantic(unittest.TestCase):
 
     def test_semantic_analysis_output_structure(self):
         """Tests that the semantic analysis function returns a dictionary with all required nested keys."""
-        # Use a mock model name since the function requires it, but the value is irrelevant for this test.
+        # Use a mock model name
         result = analyze_semantic(self.text)
         
         self.assertIsInstance(result, dict)
@@ -84,12 +84,12 @@ class TestSemantic(unittest.TestCase):
         summary = result['semantic_summary']
         self.assertIsInstance(summary, dict)
         
-        # Check for required nested keys
+        #Check for required nested keys
         expected_summary_keys = ["total_words", "total_clusters", "top_clusters", "clusters"]
         for key in expected_summary_keys:
             self.assertIn(key, summary, f"Missing required key: '{key}' in semantic_summary.")
             
-        # Check if clusters list is populated
+        #Check if clusters list is populated
         if summary['total_clusters'] > 0:
             self.assertIsInstance(summary['clusters'], list)
             self.assertGreater(len(summary['clusters']), 0)
