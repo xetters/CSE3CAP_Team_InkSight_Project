@@ -1,0 +1,121 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" version="28.2.9">
+  <diagram name="InkSight Data Flow" id="AufgvJwU97PJsAM5OrQc">
+    <mxGraphModel dx="2852" dy="2751" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-1" value="Uploaded Writing&lt;br&gt;TXT/DOCX/MD/ODT&lt;br&gt;max 5MB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#2e7d32;strokeWidth=2;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="750" y="-240" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-2" value="File Upload &amp; Analysis Selection&lt;br&gt;frontend/index.js" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#e65100;strokeWidth=2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="725" y="-130" width="230" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-3" value="File Data Extraction &amp; Routing&lt;br&gt;api/routes.js + multer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#e65100;strokeWidth=2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="725" y="-30" width="230" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-4" value="Word Frequency Analysis&lt;br&gt;api/utils/analyze.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#e65100;strokeWidth=2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="260" y="130" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-5" value="Keyness Controller&lt;br&gt;api/controllers/keynessController.js" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#e65100;strokeWidth=2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="705" y="130" width="270" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-6" value="Keyness Statistics&lt;br&gt;api/utils/keyness.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#e65100;strokeWidth=2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="740" y="240" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-7" value="Semantic Clustering&lt;br&gt;api/utils/semantic.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#e65100;strokeWidth=2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="130" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-8" value="Display Word Results&lt;br&gt;frontend/index.js" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#e65100;strokeWidth=2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="260" y="350" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-9" value="Display Keyness Chart&lt;br&gt;frontend/keyness.js" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#e65100;strokeWidth=2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="740" y="350" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-10" value="Display Semantic Clusters&lt;br&gt;frontend/sentiment.js" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#e65100;strokeWidth=2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="240" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-11" value="Semantic Chart Visualization&lt;br&gt;frontend/semantic-chart.js" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#e65100;strokeWidth=2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="350" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-12" value="Analysis Results&lt;br&gt;Word Frequency/&lt;br&gt;Keyness Statistics/&lt;br&gt;Semantic Clusters" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#2e7d32;strokeWidth=2;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="725" y="540" width="230" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-13" value="Generate HTML Report&lt;br&gt;frontend/download.js" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#e65100;strokeWidth=2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="725" y="670" width="230" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-14" value="Standalone HTML Report&lt;br&gt;Downloadable File" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#2e7d32;strokeWidth=2;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="725" y="780" width="230" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-15" value="File Data" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="msM2YhvQ-K_mUUJuXp3B-1" target="msM2YhvQ-K_mUUJuXp3B-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-16" value="Validated File + Analysis Type" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="msM2YhvQ-K_mUUJuXp3B-2" target="msM2YhvQ-K_mUUJuXp3B-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-17" value="Text via stdin&lt;br&gt;(pythonRunner.js)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="msM2YhvQ-K_mUUJuXp3B-3" target="msM2YhvQ-K_mUUJuXp3B-4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="840" y="100" />
+              <mxPoint x="360" y="100" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-18" value="Text + Corpus Name" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="msM2YhvQ-K_mUUJuXp3B-3" target="msM2YhvQ-K_mUUJuXp3B-5">
+          <mxGeometry x="-0.2" y="20" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-19" value="Text via stdin&lt;br&gt;(pythonRunner.js)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="msM2YhvQ-K_mUUJuXp3B-3" target="msM2YhvQ-K_mUUJuXp3B-7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="840" y="100" />
+              <mxPoint x="1320" y="100" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-20" value="JSON via stdin&lt;br&gt;(pythonRunner.js)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="msM2YhvQ-K_mUUJuXp3B-5" target="msM2YhvQ-K_mUUJuXp3B-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-21" value="Word Frequency JSON" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="msM2YhvQ-K_mUUJuXp3B-4" target="msM2YhvQ-K_mUUJuXp3B-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-22" value="Keyness Statistics JSON" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="msM2YhvQ-K_mUUJuXp3B-6" target="msM2YhvQ-K_mUUJuXp3B-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-23" value="Semantic Clusters JSON" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="msM2YhvQ-K_mUUJuXp3B-7" target="msM2YhvQ-K_mUUJuXp3B-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-24" value="Cluster Data" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="msM2YhvQ-K_mUUJuXp3B-10" target="msM2YhvQ-K_mUUJuXp3B-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-25" value="Rendered Results" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="msM2YhvQ-K_mUUJuXp3B-8" target="msM2YhvQ-K_mUUJuXp3B-12">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="360" y="450" />
+              <mxPoint x="840" y="450" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-26" value="Rendered Chart" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="msM2YhvQ-K_mUUJuXp3B-9" target="msM2YhvQ-K_mUUJuXp3B-12">
+          <mxGeometry x="0.3846" y="50" relative="1" as="geometry">
+            <mxPoint y="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-27" value="Rendered Visualization" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="msM2YhvQ-K_mUUJuXp3B-11" target="msM2YhvQ-K_mUUJuXp3B-12">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1320" y="450" />
+              <mxPoint x="840" y="450" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-28" value="Analysis Data" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;dashed=1;dashPattern=8 8;" edge="1" parent="1" source="msM2YhvQ-K_mUUJuXp3B-12" target="msM2YhvQ-K_mUUJuXp3B-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="msM2YhvQ-K_mUUJuXp3B-29" value="Combined HTML" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;dashed=1;dashPattern=8 8;" edge="1" parent="1" source="msM2YhvQ-K_mUUJuXp3B-13" target="msM2YhvQ-K_mUUJuXp3B-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
