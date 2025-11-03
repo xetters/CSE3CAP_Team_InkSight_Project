@@ -9,5 +9,5 @@ cc.en.100.bin
 models/
 CLAUDE.md
 .claude
-
+.ruff_cache/
 
