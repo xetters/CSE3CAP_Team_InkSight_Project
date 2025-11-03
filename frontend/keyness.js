@@ -74,7 +74,7 @@ function renderKeynessStats(data) {
     <div class="analysis-content">
       <p>Compares how often words appear in your text versus the reference corpus to identify which words make your writing distinctive.</p>
 
-      <div class="info-box" style="background: #fafbfc; border: 1px solid #e8eaed;">
+      <div class="info-box info-box-neutral">
         <p><strong>Reference Corpus:</strong> ${data.corpus.display_name} - ${data.corpus.description}</p>
       </div>
 
@@ -93,7 +93,7 @@ function renderKeynessStats(data) {
         </div>
       </div>
 
-      <div class="info-box" style="background: #fafbfc; border: 1px solid #e8eaed;">
+      <div class="info-box info-box-neutral">
         <p><strong>Most Distinctive Words:</strong><br>
         <strong>Over-represented in your text:</strong> ${top3Over.map(k => `"${k.word}"`).join(", ") || "None"}<br>
         <strong>Under-represented in your text:</strong> ${top3Under.map(k => `"${k.word}"`).join(", ") || "None"}</p>
@@ -101,8 +101,8 @@ function renderKeynessStats(data) {
 
       <h4>Keyness Comparison</h4>
 
-      <div class="info-box" style="background: #fef3c7; border-left-color: #f59e0b;">
-        <p style="color: #92400e;">Showing top 15 most distinctive words from each category. Full keyword list includes ${data.significant_keywords} significant words.</p>
+      <div class="info-box warning">
+        <p class="info-box-warning-text">Showing top 15 most distinctive words from each category. Full keyword list includes ${data.significant_keywords} significant words.</p>
       </div>
 
       <div class="legend">

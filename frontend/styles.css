@@ -350,6 +350,20 @@ textarea:disabled {
   margin-top: 0.25rem;
 }
 
+/* Utility classes */
+.hidden { display: none; }
+.warning-text { color: var(--danger); font-size: 0.9rem; margin-top: 0.5rem; font-weight: 500; }
+.info-box-neutral { background: #fafbfc; border: 1px solid #e8eaed; }
+.info-box-warning-text { color: #92400e; }
+.chart-height { height: 500px; }
+.empty-icon { width: 50%; height: 50%; }
+.corpus-selector { margin-top: 0.5rem; margin-left: 1.5rem; }
+.corpus-label { font-size: 0.9rem; color: var(--muted); }
+.corpus-select { margin-top: 0.25rem; width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: white; color: var(--text); }
+.semantic-heading { margin-top: 20px; }
+.semantic-list { padding-left: 20px; line-height: 1.6; }
+.semantic-note { margin-top: 20px; font-size: 0.85rem; opacity: 0.7; }
+
 /* Buttons */
 button {
   padding: 0.75rem 1.5rem;

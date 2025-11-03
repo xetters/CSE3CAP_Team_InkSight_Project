@@ -41,11 +41,11 @@
               <span class="file-types">TXT, DOCX, MD, ODT</span>
             </div>
 
-            <div id="fileName" class="file-selected" style="display: none;">
+            <div id="fileName" class="file-selected hidden">
               <strong>Selected:</strong> <span id="fileNameText"></span>
             </div>
 
-            <button id="removeFileBtn" class="remove-btn" style="display:none;">Remove File</button>
+            <button id="removeFileBtn" class="remove-btn hidden">Remove File</button>
 
             <div class="divider">
               <span>OR</span>
@@ -53,7 +53,7 @@
 
             <label for="text">Paste text below:</label>
             <textarea id="text" rows="8" placeholder="Write or paste your text here..."></textarea>
-            <div id="analysisWarning" style="display: none; color: #ef4444; font-size: 0.9rem; margin-top: 0.5rem; font-weight: 500;">Must select analysis option</div>
+            <div id="analysisWarning" class="warning-text hidden">Must select analysis option</div>
 
             <div class="analysis-options">
               <div class="options-toggle" id="optionsToggle">
@@ -81,9 +81,9 @@
                         <small>Compare your text to reference corpora</small>
                       </span>
                     </label>
-                    <div id="corpusSelector" style="display: none; margin-top: 0.5rem; margin-left: 1.5rem;">
-                      <label for="corpusSelect" style="font-size: 0.9rem; color: var(--muted);">Reference Corpus:</label>
-                      <select id="corpusSelect" style="margin-top: 0.25rem; width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text);">
+                    <div id="corpusSelector" class="corpus-selector hidden">
+                      <label for="corpusSelect" class="corpus-label">Reference Corpus:</label>
+                      <select id="corpusSelect" class="corpus-select">
                         <option value="">Select a corpus...</option>
                       </select>
                     </div>
@@ -110,14 +110,14 @@
             <div class="results-header">
               <h2>Your Insights</h2>
               <div class="results-actions">
-                <button class="download-btn btn-light" id="downloadBtn" style="display: none;">Download All</button>
-                <button class="clear-btn btn-light" id="clearBtn" style="display: none;">Clear Results</button>
+                <button class="download-btn btn-light hidden" id="downloadBtn">Download All</button>
+                <button class="clear-btn btn-light hidden" id="clearBtn">Clear Results</button>
               </div>
             </div>
 
             <div id="results">
               <div class="empty-state">
-                <div class="empty-state-icon"><img src="/media/glass.png" alt="search icon" style="width: 50%; height: 50%;"></div>
+                <div class="empty-state-icon"><img src="/media/glass.png" alt="search icon" class="empty-icon"></div>
                 <h3>No Analysis Yet</h3>
                 <p>Upload your writing to discover insights about your creative style</p>
               </div>

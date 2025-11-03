@@ -31,7 +31,7 @@ function renderSemantic(data) {
     </div>
 
     <h4>Cluster Visualization</h4>
-    <div class="chart-container" style="height: 500px;">
+    <div class="chart-container chart-height">
       <canvas id="${chartId}"></canvas>
     </div>
 

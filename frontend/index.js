@@ -418,12 +418,12 @@ async function init() {
         <p><strong>Total Word Clusters Detected:</strong> ${summary.total_clusters}</p>
 
         <h4>Cluster Visualization</h4>
-        <div class="chart-container" style="height: 500px;">
+        <div class="chart-container chart-height">
           <canvas id="${chartId}"></canvas>
         </div>
 
-        <h4 style="margin-top: 20px;">The writing has a strong affinity for...</h4>
-        <ul style="padding-left: 20px; line-height: 1.6;">
+        <h4 class="semantic-heading">The writing has a strong affinity for...</h4>
+        <ul class="semantic-list">
     `;
 
     topClusters.forEach(cluster => {
@@ -437,7 +437,7 @@ async function init() {
     html += `
         </ul>
 
-        <div style="margin-top: 20px; font-size: 0.85rem; opacity: 0.7;">
+        <div class="semantic-note">
           You can see more details in by downloading the full report.
         </div>
       </div>
