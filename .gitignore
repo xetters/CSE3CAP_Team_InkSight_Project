@@ -1,12 +1,10 @@
 node_modules/
+**/package-lock.json
 fastText/
 cc.en.300.bin
 cc.en.100.bin
-CLAUDE.md
-.claude
 .vscode
 models/
-**/package-lock.json
-documentation/
-official-documentation/
-backup_documentation.py
+CLAUDE.md
+.claude
+
