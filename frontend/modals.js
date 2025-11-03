@@ -1,6 +1,6 @@
 async function loadModals() {
   const container = document.getElementById('modals-container');
-  const modals = ['about', 'how-it-works', 'privacy', 'clear'];
+  const modals = ['how-it-works', 'privacy', 'clear'];
   for (const modal of modals) {
     const res = await fetch(`modals/${modal}.html`);
     container.innerHTML += await res.text();

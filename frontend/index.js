@@ -28,7 +28,7 @@ async function init() {
   const contentGrid = document.querySelector('.content-grid');
 
   // Navigation
-  const navModals = { howItWorksLink: 'howItWorksModal', implementationLink: 'implementationModal', teamLink: 'teamModal' };
+  const navModals = { howItWorksLink: 'howItWorksModal', teamLink: 'teamModal' };
   Object.entries(navModals).forEach(([link, modal]) => {
     $(link).addEventListener('click', (e) => {
       e.preventDefault();
