@@ -318,7 +318,7 @@ async function init() {
       <div class="result-card-header" onclick="toggleCardContent(event)">
         <h3>${title}</h3>
         <div class="card-actions">
-          <button class="section-download" onclick="event.stopPropagation(); downloadSection('${section}')">Download</button>
+          <button class="section-download btn-light" onclick="event.stopPropagation(); downloadSection('${section}')">Download</button>
           <div class="result-card-toggle">▼</div>
         </div>
       </div>
