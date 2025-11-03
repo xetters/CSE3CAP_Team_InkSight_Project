@@ -210,12 +210,8 @@ async function init() {
       }
 
       if (options.keynessStats) {
-        try {
-          keynessData = await analyzeKeyness(createFormData(), $('corpusSelect').value);
-          setKeynessData(keynessData);
-        } catch (err) {
-          console.error('Keyness analysis error:', err);
-        }
+        keynessData = await analyzeKeyness(createFormData(), $('corpusSelect').value);
+        setKeynessData(keynessData);
       }
 
       displayResults(wordData, sentData, keynessData, options);
