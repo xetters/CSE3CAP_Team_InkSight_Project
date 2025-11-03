@@ -1,5 +1,7 @@
 node_modules/
 **/package-lock.json
+__pycache__
+api/utils/fallback.txt
 fastText/
 cc.en.300.bin
 cc.en.100.bin
@@ -7,4 +9,5 @@ cc.en.100.bin
 models/
 CLAUDE.md
 .claude
+
 
