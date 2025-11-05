@@ -22,16 +22,16 @@ def download_fasttext_model():
     # Navigate to project root, then into models/ directory
     models_dir = Path(__file__).parent.parent.parent / "models"
     models_dir.mkdir(exist_ok=True)
-    model_path = models_dir / "cc.en.100.bin"
+    model_path = models_dir / "cc.en.300.bin"
 
     if model_path.exists():
         print("FastText model already exists, skipping download")
         return
 
-    model_url = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.en.100.bin.gz"
-    gz_path = models_dir / "cc.en.100.bin.gz"
+    model_url = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.en.300.bin.gz"
+    gz_path = models_dir / "cc.en.300.bin.gz"
 
-    print("Downloading FastText model (~967 MB)...")
+    print("Downloading FastText model (~4.5 GB compressed, ~7 GB extracted)...")
     urllib.request.urlretrieve(model_url, gz_path)
 
     print("Extracting model...")
