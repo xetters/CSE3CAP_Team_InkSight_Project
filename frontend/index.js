@@ -246,7 +246,7 @@ async function init() {
     clearBtn.style.display = 'inline-block';
 
     const cards = [
-      options.keyness && wordData && createResultCard('Word Analysis - Your Distinctive Words', 'word-analysis', renderWordAnalysis(wordData)),
+      options.keyness && wordData && createResultCard('Word Analysis - general insights', 'word-analysis', renderWordAnalysis(wordData)),
       options.keynessStats && keynessData && createResultCard('Keyness Statistics', 'keyness-stats', renderKeynessStats(keynessData)),
       options.sentiment && sentData && createResultCard('Semantic Analysis', 'sentiment', renderSentiment(sentData)),
     ].filter(Boolean);
